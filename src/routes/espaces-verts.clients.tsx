@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+export const Route = createFileRoute("/espaces-verts/clients")({ component: () => <Ph t="Clients" d="Structures clientes et périmètres." /> });
+function Ph({ t, d }: { t: string; d: string }) { return (<div className="max-w-2xl"><h2 className="text-xl font-bold text-slate-900">{t}</h2><p className="text-sm text-slate-500 mt-1">{d}</p><div className="mt-6 h-64 rounded-xl border border-dashed border-emerald-300 bg-emerald-50/50 flex items-center justify-center text-emerald-700 text-sm">Module — démo à venir</div></div>); }
