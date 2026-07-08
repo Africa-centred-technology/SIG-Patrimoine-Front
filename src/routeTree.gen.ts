@@ -9,38 +9,523 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SelectProductRouteImport } from './routes/select-product'
+import { Route as PlatformRouteImport } from './routes/platform'
+import { Route as EspacesVertsRouteImport } from './routes/espaces-verts'
+import { Route as EclairageRouteImport } from './routes/eclairage'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlatformIndexRouteImport } from './routes/platform.index'
+import { Route as EspacesVertsIndexRouteImport } from './routes/espaces-verts.index'
+import { Route as EclairageIndexRouteImport } from './routes/eclairage.index'
+import { Route as PlatformTenantsRouteImport } from './routes/platform.tenants'
+import { Route as PlatformSettingsRouteImport } from './routes/platform.settings'
+import { Route as PlatformProductsRouteImport } from './routes/platform.products'
+import { Route as PlatformLicencesRouteImport } from './routes/platform.licences'
+import { Route as PlatformDashboardRouteImport } from './routes/platform.dashboard'
+import { Route as PlatformBillingRouteImport } from './routes/platform.billing'
+import { Route as EspacesVertsTeamsRouteImport } from './routes/espaces-verts.teams'
+import { Route as EspacesVertsSuiviTachesRouteImport } from './routes/espaces-verts.suivi-taches'
+import { Route as EspacesVertsSitesRouteImport } from './routes/espaces-verts.sites'
+import { Route as EspacesVertsReportingRouteImport } from './routes/espaces-verts.reporting'
+import { Route as EspacesVertsReclamationsRouteImport } from './routes/espaces-verts.reclamations'
+import { Route as EspacesVertsProductsRouteImport } from './routes/espaces-verts.products'
+import { Route as EspacesVertsPlanningRouteImport } from './routes/espaces-verts.planning'
+import { Route as EspacesVertsParametresRouteImport } from './routes/espaces-verts.parametres'
+import { Route as EspacesVertsMapRouteImport } from './routes/espaces-verts.map'
+import { Route as EspacesVertsInventoryRouteImport } from './routes/espaces-verts.inventory'
+import { Route as EspacesVertsDashboardRouteImport } from './routes/espaces-verts.dashboard'
+import { Route as EspacesVertsClientsRouteImport } from './routes/espaces-verts.clients'
+import { Route as EclairageTeamsRouteImport } from './routes/eclairage.teams'
+import { Route as EclairageSitesRouteImport } from './routes/eclairage.sites'
+import { Route as EclairageReportingRouteImport } from './routes/eclairage.reporting'
+import { Route as EclairageReclamationsRouteImport } from './routes/eclairage.reclamations'
+import { Route as EclairagePlanningRouteImport } from './routes/eclairage.planning'
+import { Route as EclairageParametresRouteImport } from './routes/eclairage.parametres'
+import { Route as EclairageMapRouteImport } from './routes/eclairage.map'
+import { Route as EclairageInventoryRouteImport } from './routes/eclairage.inventory'
+import { Route as EclairageInterventionsRouteImport } from './routes/eclairage.interventions'
+import { Route as EclairageEnergieRouteImport } from './routes/eclairage.energie'
+import { Route as EclairageDashboardRouteImport } from './routes/eclairage.dashboard'
+import { Route as PlatformTenantsIndexRouteImport } from './routes/platform.tenants.index'
+import { Route as PlatformTenantsIdRouteImport } from './routes/platform.tenants.$id'
 
+const SelectProductRoute = SelectProductRouteImport.update({
+  id: '/select-product',
+  path: '/select-product',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlatformRoute = PlatformRouteImport.update({
+  id: '/platform',
+  path: '/platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspacesVertsRoute = EspacesVertsRouteImport.update({
+  id: '/espaces-verts',
+  path: '/espaces-verts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EclairageRoute = EclairageRouteImport.update({
+  id: '/eclairage',
+  path: '/eclairage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlatformIndexRoute = PlatformIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const EspacesVertsIndexRoute = EspacesVertsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EclairageIndexRoute = EclairageIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const PlatformTenantsRoute = PlatformTenantsRouteImport.update({
+  id: '/tenants',
+  path: '/tenants',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformSettingsRoute = PlatformSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformProductsRoute = PlatformProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformLicencesRoute = PlatformLicencesRouteImport.update({
+  id: '/licences',
+  path: '/licences',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformDashboardRoute = PlatformDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const PlatformBillingRoute = PlatformBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => PlatformRoute,
+} as any)
+const EspacesVertsTeamsRoute = EspacesVertsTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsSuiviTachesRoute = EspacesVertsSuiviTachesRouteImport.update({
+  id: '/suivi-taches',
+  path: '/suivi-taches',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsSitesRoute = EspacesVertsSitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsReportingRoute = EspacesVertsReportingRouteImport.update({
+  id: '/reporting',
+  path: '/reporting',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsReclamationsRoute =
+  EspacesVertsReclamationsRouteImport.update({
+    id: '/reclamations',
+    path: '/reclamations',
+    getParentRoute: () => EspacesVertsRoute,
+  } as any)
+const EspacesVertsProductsRoute = EspacesVertsProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsPlanningRoute = EspacesVertsPlanningRouteImport.update({
+  id: '/planning',
+  path: '/planning',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsParametresRoute = EspacesVertsParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsMapRoute = EspacesVertsMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsInventoryRoute = EspacesVertsInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsDashboardRoute = EspacesVertsDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EspacesVertsClientsRoute = EspacesVertsClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => EspacesVertsRoute,
+} as any)
+const EclairageTeamsRoute = EclairageTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageSitesRoute = EclairageSitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageReportingRoute = EclairageReportingRouteImport.update({
+  id: '/reporting',
+  path: '/reporting',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageReclamationsRoute = EclairageReclamationsRouteImport.update({
+  id: '/reclamations',
+  path: '/reclamations',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairagePlanningRoute = EclairagePlanningRouteImport.update({
+  id: '/planning',
+  path: '/planning',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageParametresRoute = EclairageParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageMapRoute = EclairageMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageInventoryRoute = EclairageInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageInterventionsRoute = EclairageInterventionsRouteImport.update({
+  id: '/interventions',
+  path: '/interventions',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageEnergieRoute = EclairageEnergieRouteImport.update({
+  id: '/energie',
+  path: '/energie',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const EclairageDashboardRoute = EclairageDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => EclairageRoute,
+} as any)
+const PlatformTenantsIndexRoute = PlatformTenantsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlatformTenantsRoute,
+} as any)
+const PlatformTenantsIdRoute = PlatformTenantsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PlatformTenantsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/eclairage': typeof EclairageRouteWithChildren
+  '/espaces-verts': typeof EspacesVertsRouteWithChildren
+  '/platform': typeof PlatformRouteWithChildren
+  '/select-product': typeof SelectProductRoute
+  '/eclairage/dashboard': typeof EclairageDashboardRoute
+  '/eclairage/energie': typeof EclairageEnergieRoute
+  '/eclairage/interventions': typeof EclairageInterventionsRoute
+  '/eclairage/inventory': typeof EclairageInventoryRoute
+  '/eclairage/map': typeof EclairageMapRoute
+  '/eclairage/parametres': typeof EclairageParametresRoute
+  '/eclairage/planning': typeof EclairagePlanningRoute
+  '/eclairage/reclamations': typeof EclairageReclamationsRoute
+  '/eclairage/reporting': typeof EclairageReportingRoute
+  '/eclairage/sites': typeof EclairageSitesRoute
+  '/eclairage/teams': typeof EclairageTeamsRoute
+  '/espaces-verts/clients': typeof EspacesVertsClientsRoute
+  '/espaces-verts/dashboard': typeof EspacesVertsDashboardRoute
+  '/espaces-verts/inventory': typeof EspacesVertsInventoryRoute
+  '/espaces-verts/map': typeof EspacesVertsMapRoute
+  '/espaces-verts/parametres': typeof EspacesVertsParametresRoute
+  '/espaces-verts/planning': typeof EspacesVertsPlanningRoute
+  '/espaces-verts/products': typeof EspacesVertsProductsRoute
+  '/espaces-verts/reclamations': typeof EspacesVertsReclamationsRoute
+  '/espaces-verts/reporting': typeof EspacesVertsReportingRoute
+  '/espaces-verts/sites': typeof EspacesVertsSitesRoute
+  '/espaces-verts/suivi-taches': typeof EspacesVertsSuiviTachesRoute
+  '/espaces-verts/teams': typeof EspacesVertsTeamsRoute
+  '/platform/billing': typeof PlatformBillingRoute
+  '/platform/dashboard': typeof PlatformDashboardRoute
+  '/platform/licences': typeof PlatformLicencesRoute
+  '/platform/products': typeof PlatformProductsRoute
+  '/platform/settings': typeof PlatformSettingsRoute
+  '/platform/tenants': typeof PlatformTenantsRouteWithChildren
+  '/eclairage/': typeof EclairageIndexRoute
+  '/espaces-verts/': typeof EspacesVertsIndexRoute
+  '/platform/': typeof PlatformIndexRoute
+  '/platform/tenants/$id': typeof PlatformTenantsIdRoute
+  '/platform/tenants/': typeof PlatformTenantsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/select-product': typeof SelectProductRoute
+  '/eclairage/dashboard': typeof EclairageDashboardRoute
+  '/eclairage/energie': typeof EclairageEnergieRoute
+  '/eclairage/interventions': typeof EclairageInterventionsRoute
+  '/eclairage/inventory': typeof EclairageInventoryRoute
+  '/eclairage/map': typeof EclairageMapRoute
+  '/eclairage/parametres': typeof EclairageParametresRoute
+  '/eclairage/planning': typeof EclairagePlanningRoute
+  '/eclairage/reclamations': typeof EclairageReclamationsRoute
+  '/eclairage/reporting': typeof EclairageReportingRoute
+  '/eclairage/sites': typeof EclairageSitesRoute
+  '/eclairage/teams': typeof EclairageTeamsRoute
+  '/espaces-verts/clients': typeof EspacesVertsClientsRoute
+  '/espaces-verts/dashboard': typeof EspacesVertsDashboardRoute
+  '/espaces-verts/inventory': typeof EspacesVertsInventoryRoute
+  '/espaces-verts/map': typeof EspacesVertsMapRoute
+  '/espaces-verts/parametres': typeof EspacesVertsParametresRoute
+  '/espaces-verts/planning': typeof EspacesVertsPlanningRoute
+  '/espaces-verts/products': typeof EspacesVertsProductsRoute
+  '/espaces-verts/reclamations': typeof EspacesVertsReclamationsRoute
+  '/espaces-verts/reporting': typeof EspacesVertsReportingRoute
+  '/espaces-verts/sites': typeof EspacesVertsSitesRoute
+  '/espaces-verts/suivi-taches': typeof EspacesVertsSuiviTachesRoute
+  '/espaces-verts/teams': typeof EspacesVertsTeamsRoute
+  '/platform/billing': typeof PlatformBillingRoute
+  '/platform/dashboard': typeof PlatformDashboardRoute
+  '/platform/licences': typeof PlatformLicencesRoute
+  '/platform/products': typeof PlatformProductsRoute
+  '/platform/settings': typeof PlatformSettingsRoute
+  '/eclairage': typeof EclairageIndexRoute
+  '/espaces-verts': typeof EspacesVertsIndexRoute
+  '/platform': typeof PlatformIndexRoute
+  '/platform/tenants/$id': typeof PlatformTenantsIdRoute
+  '/platform/tenants': typeof PlatformTenantsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/eclairage': typeof EclairageRouteWithChildren
+  '/espaces-verts': typeof EspacesVertsRouteWithChildren
+  '/platform': typeof PlatformRouteWithChildren
+  '/select-product': typeof SelectProductRoute
+  '/eclairage/dashboard': typeof EclairageDashboardRoute
+  '/eclairage/energie': typeof EclairageEnergieRoute
+  '/eclairage/interventions': typeof EclairageInterventionsRoute
+  '/eclairage/inventory': typeof EclairageInventoryRoute
+  '/eclairage/map': typeof EclairageMapRoute
+  '/eclairage/parametres': typeof EclairageParametresRoute
+  '/eclairage/planning': typeof EclairagePlanningRoute
+  '/eclairage/reclamations': typeof EclairageReclamationsRoute
+  '/eclairage/reporting': typeof EclairageReportingRoute
+  '/eclairage/sites': typeof EclairageSitesRoute
+  '/eclairage/teams': typeof EclairageTeamsRoute
+  '/espaces-verts/clients': typeof EspacesVertsClientsRoute
+  '/espaces-verts/dashboard': typeof EspacesVertsDashboardRoute
+  '/espaces-verts/inventory': typeof EspacesVertsInventoryRoute
+  '/espaces-verts/map': typeof EspacesVertsMapRoute
+  '/espaces-verts/parametres': typeof EspacesVertsParametresRoute
+  '/espaces-verts/planning': typeof EspacesVertsPlanningRoute
+  '/espaces-verts/products': typeof EspacesVertsProductsRoute
+  '/espaces-verts/reclamations': typeof EspacesVertsReclamationsRoute
+  '/espaces-verts/reporting': typeof EspacesVertsReportingRoute
+  '/espaces-verts/sites': typeof EspacesVertsSitesRoute
+  '/espaces-verts/suivi-taches': typeof EspacesVertsSuiviTachesRoute
+  '/espaces-verts/teams': typeof EspacesVertsTeamsRoute
+  '/platform/billing': typeof PlatformBillingRoute
+  '/platform/dashboard': typeof PlatformDashboardRoute
+  '/platform/licences': typeof PlatformLicencesRoute
+  '/platform/products': typeof PlatformProductsRoute
+  '/platform/settings': typeof PlatformSettingsRoute
+  '/platform/tenants': typeof PlatformTenantsRouteWithChildren
+  '/eclairage/': typeof EclairageIndexRoute
+  '/espaces-verts/': typeof EspacesVertsIndexRoute
+  '/platform/': typeof PlatformIndexRoute
+  '/platform/tenants/$id': typeof PlatformTenantsIdRoute
+  '/platform/tenants/': typeof PlatformTenantsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/eclairage'
+    | '/espaces-verts'
+    | '/platform'
+    | '/select-product'
+    | '/eclairage/dashboard'
+    | '/eclairage/energie'
+    | '/eclairage/interventions'
+    | '/eclairage/inventory'
+    | '/eclairage/map'
+    | '/eclairage/parametres'
+    | '/eclairage/planning'
+    | '/eclairage/reclamations'
+    | '/eclairage/reporting'
+    | '/eclairage/sites'
+    | '/eclairage/teams'
+    | '/espaces-verts/clients'
+    | '/espaces-verts/dashboard'
+    | '/espaces-verts/inventory'
+    | '/espaces-verts/map'
+    | '/espaces-verts/parametres'
+    | '/espaces-verts/planning'
+    | '/espaces-verts/products'
+    | '/espaces-verts/reclamations'
+    | '/espaces-verts/reporting'
+    | '/espaces-verts/sites'
+    | '/espaces-verts/suivi-taches'
+    | '/espaces-verts/teams'
+    | '/platform/billing'
+    | '/platform/dashboard'
+    | '/platform/licences'
+    | '/platform/products'
+    | '/platform/settings'
+    | '/platform/tenants'
+    | '/eclairage/'
+    | '/espaces-verts/'
+    | '/platform/'
+    | '/platform/tenants/$id'
+    | '/platform/tenants/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/select-product'
+    | '/eclairage/dashboard'
+    | '/eclairage/energie'
+    | '/eclairage/interventions'
+    | '/eclairage/inventory'
+    | '/eclairage/map'
+    | '/eclairage/parametres'
+    | '/eclairage/planning'
+    | '/eclairage/reclamations'
+    | '/eclairage/reporting'
+    | '/eclairage/sites'
+    | '/eclairage/teams'
+    | '/espaces-verts/clients'
+    | '/espaces-verts/dashboard'
+    | '/espaces-verts/inventory'
+    | '/espaces-verts/map'
+    | '/espaces-verts/parametres'
+    | '/espaces-verts/planning'
+    | '/espaces-verts/products'
+    | '/espaces-verts/reclamations'
+    | '/espaces-verts/reporting'
+    | '/espaces-verts/sites'
+    | '/espaces-verts/suivi-taches'
+    | '/espaces-verts/teams'
+    | '/platform/billing'
+    | '/platform/dashboard'
+    | '/platform/licences'
+    | '/platform/products'
+    | '/platform/settings'
+    | '/eclairage'
+    | '/espaces-verts'
+    | '/platform'
+    | '/platform/tenants/$id'
+    | '/platform/tenants'
+  id:
+    | '__root__'
+    | '/'
+    | '/eclairage'
+    | '/espaces-verts'
+    | '/platform'
+    | '/select-product'
+    | '/eclairage/dashboard'
+    | '/eclairage/energie'
+    | '/eclairage/interventions'
+    | '/eclairage/inventory'
+    | '/eclairage/map'
+    | '/eclairage/parametres'
+    | '/eclairage/planning'
+    | '/eclairage/reclamations'
+    | '/eclairage/reporting'
+    | '/eclairage/sites'
+    | '/eclairage/teams'
+    | '/espaces-verts/clients'
+    | '/espaces-verts/dashboard'
+    | '/espaces-verts/inventory'
+    | '/espaces-verts/map'
+    | '/espaces-verts/parametres'
+    | '/espaces-verts/planning'
+    | '/espaces-verts/products'
+    | '/espaces-verts/reclamations'
+    | '/espaces-verts/reporting'
+    | '/espaces-verts/sites'
+    | '/espaces-verts/suivi-taches'
+    | '/espaces-verts/teams'
+    | '/platform/billing'
+    | '/platform/dashboard'
+    | '/platform/licences'
+    | '/platform/products'
+    | '/platform/settings'
+    | '/platform/tenants'
+    | '/eclairage/'
+    | '/espaces-verts/'
+    | '/platform/'
+    | '/platform/tenants/$id'
+    | '/platform/tenants/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EclairageRoute: typeof EclairageRouteWithChildren
+  EspacesVertsRoute: typeof EspacesVertsRouteWithChildren
+  PlatformRoute: typeof PlatformRouteWithChildren
+  SelectProductRoute: typeof SelectProductRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/select-product': {
+      id: '/select-product'
+      path: '/select-product'
+      fullPath: '/select-product'
+      preLoaderRoute: typeof SelectProductRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform': {
+      id: '/platform'
+      path: '/platform'
+      fullPath: '/platform'
+      preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espaces-verts': {
+      id: '/espaces-verts'
+      path: '/espaces-verts'
+      fullPath: '/espaces-verts'
+      preLoaderRoute: typeof EspacesVertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eclairage': {
+      id: '/eclairage'
+      path: '/eclairage'
+      fullPath: '/eclairage'
+      preLoaderRoute: typeof EclairageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +533,361 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/platform/': {
+      id: '/platform/'
+      path: '/'
+      fullPath: '/platform/'
+      preLoaderRoute: typeof PlatformIndexRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/espaces-verts/': {
+      id: '/espaces-verts/'
+      path: '/'
+      fullPath: '/espaces-verts/'
+      preLoaderRoute: typeof EspacesVertsIndexRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/eclairage/': {
+      id: '/eclairage/'
+      path: '/'
+      fullPath: '/eclairage/'
+      preLoaderRoute: typeof EclairageIndexRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/platform/tenants': {
+      id: '/platform/tenants'
+      path: '/tenants'
+      fullPath: '/platform/tenants'
+      preLoaderRoute: typeof PlatformTenantsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/platform/settings': {
+      id: '/platform/settings'
+      path: '/settings'
+      fullPath: '/platform/settings'
+      preLoaderRoute: typeof PlatformSettingsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/platform/products': {
+      id: '/platform/products'
+      path: '/products'
+      fullPath: '/platform/products'
+      preLoaderRoute: typeof PlatformProductsRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/platform/licences': {
+      id: '/platform/licences'
+      path: '/licences'
+      fullPath: '/platform/licences'
+      preLoaderRoute: typeof PlatformLicencesRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/platform/dashboard': {
+      id: '/platform/dashboard'
+      path: '/dashboard'
+      fullPath: '/platform/dashboard'
+      preLoaderRoute: typeof PlatformDashboardRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/platform/billing': {
+      id: '/platform/billing'
+      path: '/billing'
+      fullPath: '/platform/billing'
+      preLoaderRoute: typeof PlatformBillingRouteImport
+      parentRoute: typeof PlatformRoute
+    }
+    '/espaces-verts/teams': {
+      id: '/espaces-verts/teams'
+      path: '/teams'
+      fullPath: '/espaces-verts/teams'
+      preLoaderRoute: typeof EspacesVertsTeamsRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/suivi-taches': {
+      id: '/espaces-verts/suivi-taches'
+      path: '/suivi-taches'
+      fullPath: '/espaces-verts/suivi-taches'
+      preLoaderRoute: typeof EspacesVertsSuiviTachesRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/sites': {
+      id: '/espaces-verts/sites'
+      path: '/sites'
+      fullPath: '/espaces-verts/sites'
+      preLoaderRoute: typeof EspacesVertsSitesRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/reporting': {
+      id: '/espaces-verts/reporting'
+      path: '/reporting'
+      fullPath: '/espaces-verts/reporting'
+      preLoaderRoute: typeof EspacesVertsReportingRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/reclamations': {
+      id: '/espaces-verts/reclamations'
+      path: '/reclamations'
+      fullPath: '/espaces-verts/reclamations'
+      preLoaderRoute: typeof EspacesVertsReclamationsRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/products': {
+      id: '/espaces-verts/products'
+      path: '/products'
+      fullPath: '/espaces-verts/products'
+      preLoaderRoute: typeof EspacesVertsProductsRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/planning': {
+      id: '/espaces-verts/planning'
+      path: '/planning'
+      fullPath: '/espaces-verts/planning'
+      preLoaderRoute: typeof EspacesVertsPlanningRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/parametres': {
+      id: '/espaces-verts/parametres'
+      path: '/parametres'
+      fullPath: '/espaces-verts/parametres'
+      preLoaderRoute: typeof EspacesVertsParametresRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/map': {
+      id: '/espaces-verts/map'
+      path: '/map'
+      fullPath: '/espaces-verts/map'
+      preLoaderRoute: typeof EspacesVertsMapRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/inventory': {
+      id: '/espaces-verts/inventory'
+      path: '/inventory'
+      fullPath: '/espaces-verts/inventory'
+      preLoaderRoute: typeof EspacesVertsInventoryRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/dashboard': {
+      id: '/espaces-verts/dashboard'
+      path: '/dashboard'
+      fullPath: '/espaces-verts/dashboard'
+      preLoaderRoute: typeof EspacesVertsDashboardRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/espaces-verts/clients': {
+      id: '/espaces-verts/clients'
+      path: '/clients'
+      fullPath: '/espaces-verts/clients'
+      preLoaderRoute: typeof EspacesVertsClientsRouteImport
+      parentRoute: typeof EspacesVertsRoute
+    }
+    '/eclairage/teams': {
+      id: '/eclairage/teams'
+      path: '/teams'
+      fullPath: '/eclairage/teams'
+      preLoaderRoute: typeof EclairageTeamsRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/sites': {
+      id: '/eclairage/sites'
+      path: '/sites'
+      fullPath: '/eclairage/sites'
+      preLoaderRoute: typeof EclairageSitesRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/reporting': {
+      id: '/eclairage/reporting'
+      path: '/reporting'
+      fullPath: '/eclairage/reporting'
+      preLoaderRoute: typeof EclairageReportingRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/reclamations': {
+      id: '/eclairage/reclamations'
+      path: '/reclamations'
+      fullPath: '/eclairage/reclamations'
+      preLoaderRoute: typeof EclairageReclamationsRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/planning': {
+      id: '/eclairage/planning'
+      path: '/planning'
+      fullPath: '/eclairage/planning'
+      preLoaderRoute: typeof EclairagePlanningRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/parametres': {
+      id: '/eclairage/parametres'
+      path: '/parametres'
+      fullPath: '/eclairage/parametres'
+      preLoaderRoute: typeof EclairageParametresRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/map': {
+      id: '/eclairage/map'
+      path: '/map'
+      fullPath: '/eclairage/map'
+      preLoaderRoute: typeof EclairageMapRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/inventory': {
+      id: '/eclairage/inventory'
+      path: '/inventory'
+      fullPath: '/eclairage/inventory'
+      preLoaderRoute: typeof EclairageInventoryRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/interventions': {
+      id: '/eclairage/interventions'
+      path: '/interventions'
+      fullPath: '/eclairage/interventions'
+      preLoaderRoute: typeof EclairageInterventionsRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/energie': {
+      id: '/eclairage/energie'
+      path: '/energie'
+      fullPath: '/eclairage/energie'
+      preLoaderRoute: typeof EclairageEnergieRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/eclairage/dashboard': {
+      id: '/eclairage/dashboard'
+      path: '/dashboard'
+      fullPath: '/eclairage/dashboard'
+      preLoaderRoute: typeof EclairageDashboardRouteImport
+      parentRoute: typeof EclairageRoute
+    }
+    '/platform/tenants/': {
+      id: '/platform/tenants/'
+      path: '/'
+      fullPath: '/platform/tenants/'
+      preLoaderRoute: typeof PlatformTenantsIndexRouteImport
+      parentRoute: typeof PlatformTenantsRoute
+    }
+    '/platform/tenants/$id': {
+      id: '/platform/tenants/$id'
+      path: '/$id'
+      fullPath: '/platform/tenants/$id'
+      preLoaderRoute: typeof PlatformTenantsIdRouteImport
+      parentRoute: typeof PlatformTenantsRoute
+    }
   }
 }
 
+interface EclairageRouteChildren {
+  EclairageDashboardRoute: typeof EclairageDashboardRoute
+  EclairageEnergieRoute: typeof EclairageEnergieRoute
+  EclairageInterventionsRoute: typeof EclairageInterventionsRoute
+  EclairageInventoryRoute: typeof EclairageInventoryRoute
+  EclairageMapRoute: typeof EclairageMapRoute
+  EclairageParametresRoute: typeof EclairageParametresRoute
+  EclairagePlanningRoute: typeof EclairagePlanningRoute
+  EclairageReclamationsRoute: typeof EclairageReclamationsRoute
+  EclairageReportingRoute: typeof EclairageReportingRoute
+  EclairageSitesRoute: typeof EclairageSitesRoute
+  EclairageTeamsRoute: typeof EclairageTeamsRoute
+  EclairageIndexRoute: typeof EclairageIndexRoute
+}
+
+const EclairageRouteChildren: EclairageRouteChildren = {
+  EclairageDashboardRoute: EclairageDashboardRoute,
+  EclairageEnergieRoute: EclairageEnergieRoute,
+  EclairageInterventionsRoute: EclairageInterventionsRoute,
+  EclairageInventoryRoute: EclairageInventoryRoute,
+  EclairageMapRoute: EclairageMapRoute,
+  EclairageParametresRoute: EclairageParametresRoute,
+  EclairagePlanningRoute: EclairagePlanningRoute,
+  EclairageReclamationsRoute: EclairageReclamationsRoute,
+  EclairageReportingRoute: EclairageReportingRoute,
+  EclairageSitesRoute: EclairageSitesRoute,
+  EclairageTeamsRoute: EclairageTeamsRoute,
+  EclairageIndexRoute: EclairageIndexRoute,
+}
+
+const EclairageRouteWithChildren = EclairageRoute._addFileChildren(
+  EclairageRouteChildren,
+)
+
+interface EspacesVertsRouteChildren {
+  EspacesVertsClientsRoute: typeof EspacesVertsClientsRoute
+  EspacesVertsDashboardRoute: typeof EspacesVertsDashboardRoute
+  EspacesVertsInventoryRoute: typeof EspacesVertsInventoryRoute
+  EspacesVertsMapRoute: typeof EspacesVertsMapRoute
+  EspacesVertsParametresRoute: typeof EspacesVertsParametresRoute
+  EspacesVertsPlanningRoute: typeof EspacesVertsPlanningRoute
+  EspacesVertsProductsRoute: typeof EspacesVertsProductsRoute
+  EspacesVertsReclamationsRoute: typeof EspacesVertsReclamationsRoute
+  EspacesVertsReportingRoute: typeof EspacesVertsReportingRoute
+  EspacesVertsSitesRoute: typeof EspacesVertsSitesRoute
+  EspacesVertsSuiviTachesRoute: typeof EspacesVertsSuiviTachesRoute
+  EspacesVertsTeamsRoute: typeof EspacesVertsTeamsRoute
+  EspacesVertsIndexRoute: typeof EspacesVertsIndexRoute
+}
+
+const EspacesVertsRouteChildren: EspacesVertsRouteChildren = {
+  EspacesVertsClientsRoute: EspacesVertsClientsRoute,
+  EspacesVertsDashboardRoute: EspacesVertsDashboardRoute,
+  EspacesVertsInventoryRoute: EspacesVertsInventoryRoute,
+  EspacesVertsMapRoute: EspacesVertsMapRoute,
+  EspacesVertsParametresRoute: EspacesVertsParametresRoute,
+  EspacesVertsPlanningRoute: EspacesVertsPlanningRoute,
+  EspacesVertsProductsRoute: EspacesVertsProductsRoute,
+  EspacesVertsReclamationsRoute: EspacesVertsReclamationsRoute,
+  EspacesVertsReportingRoute: EspacesVertsReportingRoute,
+  EspacesVertsSitesRoute: EspacesVertsSitesRoute,
+  EspacesVertsSuiviTachesRoute: EspacesVertsSuiviTachesRoute,
+  EspacesVertsTeamsRoute: EspacesVertsTeamsRoute,
+  EspacesVertsIndexRoute: EspacesVertsIndexRoute,
+}
+
+const EspacesVertsRouteWithChildren = EspacesVertsRoute._addFileChildren(
+  EspacesVertsRouteChildren,
+)
+
+interface PlatformTenantsRouteChildren {
+  PlatformTenantsIdRoute: typeof PlatformTenantsIdRoute
+  PlatformTenantsIndexRoute: typeof PlatformTenantsIndexRoute
+}
+
+const PlatformTenantsRouteChildren: PlatformTenantsRouteChildren = {
+  PlatformTenantsIdRoute: PlatformTenantsIdRoute,
+  PlatformTenantsIndexRoute: PlatformTenantsIndexRoute,
+}
+
+const PlatformTenantsRouteWithChildren = PlatformTenantsRoute._addFileChildren(
+  PlatformTenantsRouteChildren,
+)
+
+interface PlatformRouteChildren {
+  PlatformBillingRoute: typeof PlatformBillingRoute
+  PlatformDashboardRoute: typeof PlatformDashboardRoute
+  PlatformLicencesRoute: typeof PlatformLicencesRoute
+  PlatformProductsRoute: typeof PlatformProductsRoute
+  PlatformSettingsRoute: typeof PlatformSettingsRoute
+  PlatformTenantsRoute: typeof PlatformTenantsRouteWithChildren
+  PlatformIndexRoute: typeof PlatformIndexRoute
+}
+
+const PlatformRouteChildren: PlatformRouteChildren = {
+  PlatformBillingRoute: PlatformBillingRoute,
+  PlatformDashboardRoute: PlatformDashboardRoute,
+  PlatformLicencesRoute: PlatformLicencesRoute,
+  PlatformProductsRoute: PlatformProductsRoute,
+  PlatformSettingsRoute: PlatformSettingsRoute,
+  PlatformTenantsRoute: PlatformTenantsRouteWithChildren,
+  PlatformIndexRoute: PlatformIndexRoute,
+}
+
+const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
+  PlatformRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EclairageRoute: EclairageRouteWithChildren,
+  EspacesVertsRoute: EspacesVertsRouteWithChildren,
+  PlatformRoute: PlatformRouteWithChildren,
+  SelectProductRoute: SelectProductRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
