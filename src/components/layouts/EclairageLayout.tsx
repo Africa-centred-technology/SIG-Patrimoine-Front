@@ -54,26 +54,29 @@ export function EclairageLayout() {
         brandSub={tenant?.nom ?? "—"}
       />
 
-      {/* Zone principale : barre du haut + carte persistante + panneau flottant */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <ImpersonationBanner />
-        <EclairageTopBar />
-
-        <div className="relative flex-1 min-h-0">
-          {/* Layer 0 — carte toujours présente (interactive seulement sur la vue carte) */}
-          <div className={`absolute inset-0 ${isMapView ? "" : "pointer-events-none"}`}>
-            <EclairageMap active={isMapView} />
-          </div>
-
-          {/* Panneau flottant du module (masqué sur la vue carte) */}
-          {!isMapView && (
-            <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
-              <div className="flex-1 overflow-y-auto p-6">
-                <Outlet />
-              </div>
-            </div>
-          )}
+      {/* Zone principale : carte persistante + barre/panneau flottants */}
+      <div className="relative flex-1 min-w-0">
+        {/* Layer 0 — carte toujours présente (interactive seulement sur la vue carte) */}
+        <div className={`absolute inset-0 ${isMapView ? "" : "pointer-events-none"}`}>
+          <EclairageMap active={isMapView} />
         </div>
+
+        {isMapView ? (
+          /* Vue carte : la barre du haut flotte au-dessus de la carte */
+          <div className="absolute top-3 left-3 right-3 z-30 pointer-events-auto rounded-xl overflow-hidden shadow-lg border border-slate-200">
+            <ImpersonationBanner />
+            <EclairageTopBar />
+          </div>
+        ) : (
+          /* Vue module : panneau flottant avec la barre du haut en tête */
+          <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
+            <ImpersonationBanner />
+            <EclairageTopBar />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Outlet />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
