@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { LucideIcon } from "lucide-react";
 import type { ThemeTokens } from "@/lib/theme";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export interface NavItem {
   to: string;
@@ -16,9 +16,11 @@ interface SidebarProps {
   brandTop: React.ReactNode;
   brandSub?: string;
   footer?: React.ReactNode;
+  /** Ferme entièrement la sidebar (affiche un « X » dans l'en-tête). */
+  onClose?: () => void;
 }
 
-export function Sidebar({ theme, items, brandTop, brandSub, footer }: SidebarProps) {
+export function Sidebar({ theme, items, brandTop, brandSub, footer, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -32,10 +34,19 @@ export function Sidebar({ theme, items, brandTop, brandSub, footer }: SidebarPro
           SP
         </div>
         {!collapsed && (
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-sm font-semibold truncate">{brandTop}</div>
             {brandSub && <div className="text-[11px] text-slate-400 truncate">{brandSub}</div>}
           </div>
+        )}
+        {!collapsed && onClose && (
+          <button
+            onClick={onClose}
+            className={`p-1.5 rounded-lg text-slate-400 ${theme.navHover} transition shrink-0`}
+            title="Fermer le menu"
+          >
+            <X size={18} />
+          </button>
         )}
       </div>
 

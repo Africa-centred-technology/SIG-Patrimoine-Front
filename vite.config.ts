@@ -24,10 +24,7 @@ export default defineConfig({
     optimizeDeps: {
       // Prébundle des deps CommonJS de l'app Espaces Verts pour un interop correct
       // (ex. react-big-calendar/addons dragAndDrop, sinon le default n'est pas résolu).
-      include: [
-        "react-big-calendar",
-        "react-big-calendar/lib/addons/dragAndDrop",
-      ],
+      include: ["react-big-calendar", "react-big-calendar/lib/addons/dragAndDrop"],
     },
   },
 });
