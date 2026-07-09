@@ -18,7 +18,9 @@ function ClockPill() {
     <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200">
       <ClockIcon className="w-4 h-4 text-amber-600" />
       <div className="flex flex-col leading-none">
-        <span className="text-sm font-semibold text-slate-700 tabular-nums">{format(now, "HH:mm:ss")}</span>
+        <span className="text-sm font-semibold text-slate-700 tabular-nums">
+          {format(now, "HH:mm:ss")}
+        </span>
         <span className="text-[10px] text-slate-500 capitalize mt-0.5">
           {format(now, "EEEE d MMM", { locale: fr })}
         </span>
@@ -69,7 +71,9 @@ export function EclairageTopBar() {
     <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 flex items-center justify-between gap-3 shrink-0">
       {/* GAUCHE : titre */}
       <div className="min-w-0 shrink-0">
-        <h2 className="text-sm md:text-base font-bold text-slate-800 truncate leading-tight">Green Éclairage</h2>
+        <h2 className="text-sm md:text-base font-bold text-slate-800 truncate leading-tight">
+          Green Éclairage
+        </h2>
         <div className="hidden sm:block text-[11px] text-slate-500 leading-none">
           SIG Patrimoine <span className="text-slate-300">/</span>{" "}
           <span className="text-amber-600 font-medium">Éclairage</span>
