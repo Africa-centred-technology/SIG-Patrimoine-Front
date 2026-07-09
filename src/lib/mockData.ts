@@ -330,13 +330,109 @@ const ETATS: Luminaire["etat"][] = [
   "VETUSTE",
 ];
 
+// ── Rues (axes) : les luminaires bordent les voies, le réseau (câbles) court le
+// long de ces axes. Approximation des voies autour de Benguérir / UM6P.
+type LatLng = { lat: number; lng: number };
+export interface Rue {
+  id: string;
+  nom: string;
+  zoneId: string;
+  n: number; // nb de luminaires le long de la voie
+  path: LatLng[];
+}
+
+export const RUES: Rue[] = [
+  {
+    id: "r1",
+    nom: "Avenue centrale",
+    zoneId: "z1",
+    n: 12,
+    path: [
+      { lat: 32.216, lng: -7.943 },
+      { lat: 32.2162, lng: -7.94 },
+      { lat: 32.2161, lng: -7.937 },
+      { lat: 32.216, lng: -7.934 },
+      { lat: 32.2159, lng: -7.931 },
+    ],
+  },
+  {
+    id: "r2",
+    nom: "Rocade Nord (zone industrielle)",
+    zoneId: "z2",
+    n: 10,
+    path: [
+      { lat: 32.22, lng: -7.933 },
+      { lat: 32.2215, lng: -7.9315 },
+      { lat: 32.223, lng: -7.93 },
+      { lat: 32.2245, lng: -7.9285 },
+    ],
+  },
+  {
+    id: "r3",
+    nom: "Avenue Mohammed VI",
+    zoneId: "z3",
+    n: 10,
+    path: [
+      { lat: 32.213, lng: -7.944 },
+      { lat: 32.2115, lng: -7.9445 },
+      { lat: 32.21, lng: -7.945 },
+      { lat: 32.2085, lng: -7.9455 },
+    ],
+  },
+  {
+    id: "r4",
+    nom: "Rue résidentielle Sud",
+    zoneId: "z4",
+    n: 8,
+    path: [
+      { lat: 32.211, lng: -7.9325 },
+      { lat: 32.2095, lng: -7.9312 },
+      { lat: 32.208, lng: -7.93 },
+      { lat: 32.2065, lng: -7.9288 },
+    ],
+  },
+];
+
+// Échantillonne `n` points régulièrement espacés le long d'une polyligne,
+// avec un léger décalage perpendiculaire alterné (bord de voie).
+function pointsAlong(path: LatLng[], n: number, side = 0.00009): LatLng[] {
+  const seg: number[] = [];
+  let total = 0;
+  for (let i = 1; i < path.length; i++) {
+    const d = Math.hypot(path[i].lat - path[i - 1].lat, path[i].lng - path[i - 1].lng);
+    seg.push(d);
+    total += d;
+  }
+  const out: LatLng[] = [];
+  for (let k = 0; k < n; k++) {
+    let target = (total * (k + 0.5)) / n;
+    let i = 0;
+    while (i < seg.length && target > seg[i]) {
+      target -= seg[i];
+      i++;
+    }
+    const a = path[Math.min(i, path.length - 2)];
+    const b = path[Math.min(i + 1, path.length - 1)];
+    const f = seg[i] ? target / seg[i] : 0;
+    const lat = a.lat + (b.lat - a.lat) * f;
+    const lng = a.lng + (b.lng - a.lng) * f;
+    // perpendiculaire (approx) au segment, alternée
+    const dx = b.lng - a.lng;
+    const dy = b.lat - a.lat;
+    const len = Math.hypot(dx, dy) || 1;
+    const off = (k % 2 === 0 ? 1 : -1) * side;
+    out.push({ lat: lat + (dx / len) * off, lng: lng - (dy / len) * off });
+  }
+  return out;
+}
+
 function buildLuminaires(): Luminaire[] {
   const rand = seededRandom(42);
   const out: Luminaire[] = [];
-  ZONES.forEach((z, zi) => {
-    for (let i = 0; i < z.nb_luminaires; i++) {
-      const idx = Math.floor(rand() * TYPES.length);
-      const t = TYPES[idx];
+  RUES.forEach((rue) => {
+    const pts = pointsAlong(rue.path, rue.n);
+    pts.forEach((pt) => {
+      const t = TYPES[Math.floor(rand() * TYPES.length)];
       const etat = ETATS[Math.floor(rand() * ETATS.length)];
       const n = out.length + 1;
       out.push({
@@ -348,13 +444,10 @@ function buildLuminaires(): Luminaire[] {
         etat,
         temperature_couleur_k: t.t === "LED" ? 4000 : 2700,
         date_pose: `202${1 + Math.floor(rand() * 4)}-0${1 + Math.floor(rand() * 9)}-15`,
-        site_id: z.id,
-        coordinates: {
-          lat: z.coordinates.lat + (rand() - 0.5) * 0.006,
-          lng: z.coordinates.lng + (rand() - 0.5) * 0.006,
-        },
+        site_id: rue.zoneId,
+        coordinates: pt,
       });
-    }
+    });
   });
   return out;
 }
@@ -464,6 +557,8 @@ function buildPannes(): Panne[] {
   for (let i = 1; i <= 15; i++) {
     const t = types[Math.floor(rand() * types.length)];
     const s = statuts[Math.floor(rand() * statuts.length)];
+    // La panne est localisée sur un luminaire réel (donc sur une rue).
+    const lum = LUMINAIRES[Math.floor(rand() * LUMINAIRES.length)];
     out.push({
       id: `pan-${i}`,
       reference: `PAN-2026-${String(i).padStart(4, "0")}`,
@@ -473,11 +568,11 @@ function buildPannes(): Panne[] {
       dateSignalement: `2026-0${1 + Math.floor(rand() * 6)}-${1 + Math.floor(rand() * 27)}`,
       description: descriptionPanne(t),
       coordinates: {
-        lat: CENTER.lat + (rand() - 0.5) * 0.02,
-        lng: CENTER.lng + (rand() - 0.5) * 0.02,
+        lat: lum.coordinates.lat + (rand() - 0.5) * 0.0002,
+        lng: lum.coordinates.lng + (rand() - 0.5) * 0.0002,
       },
-      luminaireId: `lum-${1 + Math.floor(rand() * LUMINAIRES.length)}`,
-      zoneId: ZONES[Math.floor(rand() * ZONES.length)].id,
+      luminaireId: lum.id,
+      zoneId: lum.site_id,
     });
   }
   return out;

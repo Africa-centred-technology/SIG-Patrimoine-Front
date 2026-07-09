@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { Plus, Minus, X, Crosshair } from "lucide-react";
+
+type IconCmp = ComponentType<{ size?: number; className?: string }>;
 
 export interface MapMarker {
   id?: string;
@@ -10,6 +12,8 @@ export interface MapMarker {
   title?: string;
   subtitle?: string;
   details?: { label: string; value: string }[];
+  /** icône de symbologie (sinon un point coloré est affiché). */
+  icon?: IconCmp;
 }
 
 export interface MarkerGroup {
@@ -19,15 +23,26 @@ export interface MarkerGroup {
   markers: MapMarker[];
 }
 
+export interface MapLine {
+  path: { lat: number; lng: number }[];
+  color: string;
+  width?: number;
+  dash?: boolean;
+}
+
 interface TileMapProps {
   groups?: MarkerGroup[];
   markers?: MapMarker[];
+  lines?: MapLine[];
   center?: { lat: number; lng: number };
   zoom?: number;
   legend?: Array<{ color: string; label: string }>;
   height?: string;
   /** id d'un marqueur à centrer + sélectionner (ex. depuis l'inventaire). */
   focusId?: string;
+  /** mode « ajouter » : un clic sur le fond appelle onMapClick. */
+  addMode?: boolean;
+  onMapClick?: (p: { lat: number; lng: number }) => void;
 }
 
 type LayerKey = "plan" | "satellite" | "relief";
@@ -77,11 +92,14 @@ function unproject(x: number, y: number, z: number) {
 export function TileMap({
   groups,
   markers,
+  lines,
   center: centerProp = { lat: 32.216, lng: -7.937 },
   zoom = 15,
   legend,
   height = "h-[calc(100vh-13rem)]",
   focusId,
+  addMode = false,
+  onMapClick,
 }: TileMapProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -168,6 +186,14 @@ export function TileMap({
     setCenter(unproject(cw.x - dx, cw.y - dy, z));
   };
   const onPointerUp = () => {
+    const d = drag.current;
+    // Clic (sans glissement) sur le fond en mode ajout → placer un objet
+    if (d && !d.moved && addMode && onMapClick && ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      const px = d.x - rect.left;
+      const py = d.y - rect.top;
+      onMapClick(unproject(originX + px, originY + py, z));
+    }
     drag.current = null;
   };
 
@@ -206,7 +232,7 @@ export function TileMap({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      className={`relative w-full ${height} rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-200 touch-none cursor-grab active:cursor-grabbing`}
+      className={`relative w-full ${height} rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-200 touch-none ${addMode ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing"}`}
     >
       {/* Tuiles */}
       {tiles.map((t) => (
@@ -223,6 +249,33 @@ export function TileMap({
         />
       ))}
 
+      {/* Lignes (rues / câbles) */}
+      {w > 0 && lines && lines.length > 0 && (
+        <svg className="absolute inset-0 pointer-events-none" width={w} height={h}>
+          {lines.map((ln, i) => {
+            const pts = ln.path
+              .map((p) => {
+                const pr = project(p.lat, p.lng, z);
+                return `${pr.x - originX},${pr.y - originY}`;
+              })
+              .join(" ");
+            return (
+              <polyline
+                key={i}
+                points={pts}
+                fill="none"
+                stroke={ln.color}
+                strokeWidth={ln.width ?? 3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={ln.dash ? "6 6" : undefined}
+                opacity={0.9}
+              />
+            );
+          })}
+        </svg>
+      )}
+
       {/* Marqueurs */}
       {w > 0 &&
         visibleMarkers.map((m, i) => {
@@ -232,6 +285,7 @@ export function TileMap({
           if (left < -20 || left > w + 20 || top < -20 || top > h + 20) return null;
           const s = m.size ?? 10;
           const isSel = selected && (selected.id ? selected.id === m.id : selected === m);
+          const Icon = m.icon;
           return (
             <button
               key={m.id ?? i}
@@ -244,14 +298,24 @@ export function TileMap({
               style={{ left, top }}
               title={m.title}
             >
-              <span
-                className={`block rounded-full ring-2 shadow-md ${isSel ? "ring-slate-900" : "ring-white"}`}
-                style={{
-                  width: isSel ? s + 6 : s,
-                  height: isSel ? s + 6 : s,
-                  backgroundColor: m.color,
-                }}
-              />
+              {Icon ? (
+                // Symbole : pastille colorée + icône blanche
+                <span
+                  className={`flex items-center justify-center rounded-full shadow-md ring-2 ${isSel ? "ring-slate-900 scale-110" : "ring-white"}`}
+                  style={{ width: 24, height: 24, backgroundColor: m.color }}
+                >
+                  <Icon size={14} className="text-white" />
+                </span>
+              ) : (
+                <span
+                  className={`block rounded-full ring-2 shadow-md ${isSel ? "ring-slate-900" : "ring-white"}`}
+                  style={{
+                    width: isSel ? s + 6 : s,
+                    height: isSel ? s + 6 : s,
+                    backgroundColor: m.color,
+                  }}
+                />
+              )}
             </button>
           );
         })}

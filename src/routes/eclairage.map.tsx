@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TileMap, type MarkerGroup } from "@/components/shared/TileMap";
-import { LUMINAIRES, RESEAU_ELEC, PANNES, CENTER } from "@/lib/mockData";
+import { useState } from "react";
+import { Lightbulb, Zap, AlertTriangle, Plus, Check } from "lucide-react";
+import { TileMap, type MarkerGroup, type MapLine } from "@/components/shared/TileMap";
+import { LUMINAIRES, RESEAU_ELEC, PANNES, RUES, CENTER } from "@/lib/mockData";
+import type { Luminaire } from "@/lib/types";
 
 export const Route = createFileRoute("/eclairage/map")({
   component: MapEclairage,
@@ -49,20 +52,47 @@ const PANNE_STATUT_LABEL: Record<string, string> = {
 
 function MapEclairage() {
   const { focus } = Route.useSearch();
-  const luminairesEnPanne = LUMINAIRES.filter((l) => l.etat === "EN_PANNE").length;
+  // Luminaires ajoutés en cliquant sur la carte (démo, état local)
+  const [ajoutes, setAjoutes] = useState<Luminaire[]>([]);
+  const [addMode, setAddMode] = useState(false);
+
+  const tousLuminaires = [...LUMINAIRES, ...ajoutes];
+  const luminairesEnPanne = tousLuminaires.filter((l) => l.etat === "EN_PANNE").length;
   const pannesActives = PANNES.filter((p) => p.statut === "NOUVEAU" || p.statut === "EN_COURS");
+
+  const handleMapClick = (p: { lat: number; lng: number }) => {
+    const n = tousLuminaires.length + 1;
+    setAjoutes((prev) => [
+      ...prev,
+      {
+        id: `lum-new-${Date.now()}`,
+        reference: `LUM-${String(n).padStart(4, "0")}`,
+        type: "LED",
+        puissance_w: 80,
+        hauteur_feu_m: 8,
+        etat: "ALLUME",
+        temperature_couleur_k: 4000,
+        date_pose: new Date().toISOString().slice(0, 10),
+        site_id: "z1",
+        coordinates: p,
+      },
+    ]);
+  };
+
+  // Réseau (câbles) tracé le long des rues
+  const lignes: MapLine[] = RUES.map((r) => ({ path: r.path, color: "#0369a1", width: 3 }));
 
   const groups: MarkerGroup[] = [
     {
       key: "luminaires",
       label: "Luminaires",
       color: "#f59e0b",
-      markers: LUMINAIRES.map((l) => ({
+      markers: tousLuminaires.map((l) => ({
         id: l.id,
         lat: l.coordinates.lat,
         lng: l.coordinates.lng,
         color: l.etat === "EN_PANNE" ? "#ef4444" : (COLOR_TYPE[l.type] ?? "#f59e0b"),
-        size: 9,
+        icon: Lightbulb,
         title: l.reference,
         subtitle: `${l.type} · ${l.puissance_w} W`,
         details: [
@@ -87,7 +117,7 @@ function MapEclairage() {
         lat: e.coordinates.lat,
         lng: e.coordinates.lng,
         color: COLOR_ELEC[e.type] ?? "#0369a1",
-        size: 13,
+        icon: Zap,
         title: e.reference,
         subtitle: e.type,
         details: [
@@ -107,7 +137,7 @@ function MapEclairage() {
         lat: p.coordinates.lat,
         lng: p.coordinates.lng,
         color: "#dc2626",
-        size: 15,
+        icon: AlertTriangle,
         title: p.reference,
         subtitle: PANNE_TYPE_LABEL[p.type] ?? p.type,
         details: [
@@ -125,22 +155,44 @@ function MapEclairage() {
     { color: "#f97316", label: "Sodium (SHP)" },
     { color: "#eab308", label: "Projecteur" },
     { color: "#a78bfa", label: "Guirlande / festif" },
-    { color: "#0369a1", label: "Armoire / réseau" },
+    { color: "#0369a1", label: "Armoire / câble réseau" },
     { color: "#ef4444", label: "Luminaire en panne" },
     { color: "#dc2626", label: "Signalement actif" },
   ];
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Cartographie du réseau lumineux</h2>
-        <p className="text-sm text-slate-500">
-          {LUMINAIRES.length} luminaires · {RESEAU_ELEC.length} équipements réseau ·{" "}
-          {luminairesEnPanne} en panne · glisser pour déplacer, molette pour zoomer, clic pour les
-          détails
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Cartographie du réseau lumineux</h2>
+          <p className="text-sm text-slate-500">
+            {tousLuminaires.length} luminaires · {RESEAU_ELEC.length} équipements réseau ·{" "}
+            {luminairesEnPanne} en panne ·{" "}
+            {addMode ? "cliquez sur la carte pour placer un luminaire" : "glisser, molette, clic pour les détails"}
+          </p>
+        </div>
+        <button
+          onClick={() => setAddMode((v) => !v)}
+          className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium shadow-sm transition ${
+            addMode
+              ? "bg-emerald-600 text-white hover:bg-emerald-700"
+              : "bg-amber-500 text-white hover:bg-amber-600"
+          }`}
+        >
+          {addMode ? <Check size={16} /> : <Plus size={16} />}
+          {addMode ? "Terminer le placement" : "Ajouter un luminaire"}
+        </button>
       </div>
-      <TileMap groups={groups} center={CENTER} zoom={15} legend={legend} focusId={focus} />
+      <TileMap
+        groups={groups}
+        lines={lignes}
+        center={CENTER}
+        zoom={15}
+        legend={legend}
+        focusId={focus}
+        addMode={addMode}
+        onMapClick={handleMapClick}
+      />
     </div>
   );
 }
