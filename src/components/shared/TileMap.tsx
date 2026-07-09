@@ -87,7 +87,7 @@ export function TileMap({
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [z, setZ] = useState(zoom);
   const [center, setCenter] = useState(centerProp);
-  const [layer, setLayer] = useState<LayerKey>("plan");
+  const [layer, setLayer] = useState<LayerKey>("relief");
   const [selected, setSelected] = useState<MapMarker | null>(null);
 
   // Calques (groupes) : tous visibles par défaut
