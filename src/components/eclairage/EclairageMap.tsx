@@ -170,7 +170,9 @@ export function EclairageMap({ active }: EclairageMapProps) {
         <button
           onClick={() => setAddMode((v) => !v)}
           className={`absolute bottom-4 left-4 z-[500] inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium shadow-lg transition ${
-            addMode ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-amber-500 text-white hover:bg-amber-600"
+            addMode
+              ? "bg-emerald-600 text-white hover:bg-emerald-700"
+              : "bg-amber-500 text-white hover:bg-amber-600"
           }`}
         >
           {addMode ? <Check size={16} /> : <Plus size={16} />}

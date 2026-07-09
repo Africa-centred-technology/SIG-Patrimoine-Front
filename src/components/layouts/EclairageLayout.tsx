@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
 import { ImpersonationBanner } from "@/components/shared/ImpersonationBanner";
 import { EclairageMap } from "@/components/eclairage/EclairageMap";
+import { EclairageTopBar } from "@/components/eclairage/EclairageTopBar";
 import { THEMES } from "@/lib/theme";
 import { useApp, useTenant } from "@/contexts/AppContext";
 
@@ -53,22 +54,26 @@ export function EclairageLayout() {
         brandSub={tenant?.nom ?? "—"}
       />
 
-      {/* Zone principale : carte persistante + panneau flottant des modules */}
-      <div className="relative flex-1 min-w-0">
-        {/* Layer 0 — carte toujours présente (interactive seulement sur la vue carte) */}
-        <div className={`absolute inset-0 ${isMapView ? "" : "pointer-events-none"}`}>
-          <EclairageMap active={isMapView} />
-        </div>
+      {/* Zone principale : barre du haut + carte persistante + panneau flottant */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <ImpersonationBanner />
+        <EclairageTopBar />
 
-        {/* Panneau flottant du module (masqué sur la vue carte) */}
-        {!isMapView && (
-          <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
-            <ImpersonationBanner />
-            <div className="flex-1 overflow-y-auto p-6">
-              <Outlet />
-            </div>
+        <div className="relative flex-1 min-h-0">
+          {/* Layer 0 — carte toujours présente (interactive seulement sur la vue carte) */}
+          <div className={`absolute inset-0 ${isMapView ? "" : "pointer-events-none"}`}>
+            <EclairageMap active={isMapView} />
           </div>
-        )}
+
+          {/* Panneau flottant du module (masqué sur la vue carte) */}
+          {!isMapView && (
+            <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
+              <div className="flex-1 overflow-y-auto p-6">
+                <Outlet />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
