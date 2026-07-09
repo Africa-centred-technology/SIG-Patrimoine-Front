@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Lightbulb, Power, WrenchIcon, Leaf, AlertTriangle } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Lightbulb, Power, WrenchIcon, Leaf, AlertTriangle, Search, MapPin } from "lucide-react";
 import { useState } from "react";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -20,10 +20,13 @@ function InventoryPage() {
   const [type, setType] = useState<"all" | TypeLuminaire>("all");
   const [etat, setEtat] = useState<"all" | EtatLuminaire>("all");
   const [zone, setZone] = useState<string>("all");
+  const [q, setQ] = useState("");
+  const query = q.trim().toLowerCase();
   const filtered = LUMINAIRES.filter(l =>
     (type === "all" || l.type === type) &&
     (etat === "all" || l.etat === etat) &&
-    (zone === "all" || l.site_id === zone)
+    (zone === "all" || l.site_id === zone) &&
+    (query === "" || l.reference.toLowerCase().includes(query) || l.type.toLowerCase().includes(query))
   );
   return (
     <div className="space-y-5">
@@ -40,6 +43,15 @@ function InventoryPage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Rechercher (réf., type)…"
+            className="text-sm border rounded-lg bg-white pl-9 pr-3 py-2 w-56 outline-none focus:ring-2 focus:ring-amber-400"
+          />
+        </div>
         <select value={type} onChange={e => setType(e.target.value as any)} className="text-sm border rounded-lg bg-white px-3 py-2">
           <option value="all">Tous types</option>
           {(["LED", "SODIUM", "PROJECTEUR", "BORNE", "APPLIQUE", "GUIRLANDE"] as TypeLuminaire[]).map(t => <option key={t}>{t}</option>)}
@@ -64,6 +76,7 @@ function InventoryPage() {
               <th className="text-left px-4 py-3">État</th>
               <th className="text-left px-4 py-3">Secteur</th>
               <th className="text-left px-4 py-3">Date pose</th>
+              <th className="text-right px-4 py-3">Carte</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -75,6 +88,16 @@ function InventoryPage() {
                 <td className="px-4 py-3"><StatusBadge label={l.etat} tone={ETAT_TONE[l.etat]} /></td>
                 <td className="px-4 py-3 text-slate-700">{ZONES.find(z => z.id === l.site_id)?.nom}</td>
                 <td className="px-4 py-3 text-slate-500 text-xs">{l.date_pose}</td>
+                <td className="px-4 py-3 text-right">
+                  <Link
+                    to="/eclairage/map"
+                    search={{ focus: l.id }}
+                    className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium"
+                    title="Localiser sur la carte"
+                  >
+                    <MapPin size={14} /> Localiser
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

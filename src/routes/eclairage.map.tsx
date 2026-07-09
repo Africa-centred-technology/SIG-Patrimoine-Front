@@ -2,7 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { TileMap, type MarkerGroup } from "@/components/shared/TileMap";
 import { LUMINAIRES, RESEAU_ELEC, PANNES, CENTER } from "@/lib/mockData";
 
-export const Route = createFileRoute("/eclairage/map")({ component: MapEclairage });
+export const Route = createFileRoute("/eclairage/map")({
+  component: MapEclairage,
+  validateSearch: (s: Record<string, unknown>): { focus?: string } => ({
+    focus: typeof s.focus === "string" ? s.focus : undefined,
+  }),
+});
 
 const COLOR_TYPE: Record<string, string> = {
   LED: "#f59e0b",
@@ -43,6 +48,7 @@ const PANNE_STATUT_LABEL: Record<string, string> = {
 };
 
 function MapEclairage() {
+  const { focus } = Route.useSearch();
   const luminairesEnPanne = LUMINAIRES.filter((l) => l.etat === "EN_PANNE").length;
   const pannesActives = PANNES.filter((p) => p.statut === "NOUVEAU" || p.statut === "EN_COURS");
 
@@ -134,7 +140,7 @@ function MapEclairage() {
           détails
         </p>
       </div>
-      <TileMap groups={groups} center={CENTER} zoom={15} legend={legend} />
+      <TileMap groups={groups} center={CENTER} zoom={15} legend={legend} focusId={focus} />
     </div>
   );
 }

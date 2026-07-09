@@ -26,6 +26,8 @@ interface TileMapProps {
   zoom?: number;
   legend?: Array<{ color: string; label: string }>;
   height?: string;
+  /** id d'un marqueur à centrer + sélectionner (ex. depuis l'inventaire). */
+  focusId?: string;
 }
 
 type LayerKey = "plan" | "satellite" | "relief";
@@ -79,6 +81,7 @@ export function TileMap({
   zoom = 15,
   legend,
   height = "h-[calc(100vh-13rem)]",
+  focusId,
 }: TileMapProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -115,6 +118,26 @@ export function TileMap({
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
+
+  // Focus externe (ex. depuis l'inventaire) : centre + sélectionne un marqueur
+  useEffect(() => {
+    if (!focusId) return;
+    for (const g of allGroups) {
+      const m = g.markers.find((mk) => mk.id === focusId);
+      if (m) {
+        setCenter({ lat: m.lat, lng: m.lng });
+        setZ(17);
+        setHidden((prev) => {
+          const next = new Set(prev);
+          next.delete(g.key); // s'assurer que le calque est visible
+          return next;
+        });
+        setSelected(m);
+        break;
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusId]);
 
   const { w, h } = size;
   const wc = project(center.lat, center.lng, z);
@@ -208,7 +231,7 @@ export function TileMap({
           const top = p.y - originY;
           if (left < -20 || left > w + 20 || top < -20 || top > h + 20) return null;
           const s = m.size ?? 10;
-          const isSel = selected && selected === m;
+          const isSel = selected && (selected.id ? selected.id === m.id : selected === m);
           return (
             <button
               key={m.id ?? i}
