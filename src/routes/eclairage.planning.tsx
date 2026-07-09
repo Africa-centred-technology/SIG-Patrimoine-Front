@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Calendar as CalIcon, Clock, PlayCircle, CheckCircle2, CalendarDays, List } from "lucide-react";
+import {
+  Calendar as CalIcon,
+  Clock,
+  PlayCircle,
+  CheckCircle2,
+  CalendarDays,
+  List,
+} from "lucide-react";
 import { Calendar as BigCalendar, dateFnsLocalizer, type View } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -45,7 +52,11 @@ const STATUT_COLOR: Record<StatutTache, string> = {
   TERMINEE: "#22c55e",
 };
 const prioColor = (p: number) =>
-  p >= 5 ? "bg-red-100 text-red-700" : p >= 3 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600";
+  p >= 5
+    ? "bg-red-100 text-red-700"
+    : p >= 3
+      ? "bg-orange-100 text-orange-700"
+      : "bg-slate-100 text-slate-600";
 const zoneNom = (id: string) => ZONES.find((z) => z.id === id)?.nom ?? id;
 
 const localizer = dateFnsLocalizer({
@@ -77,31 +88,78 @@ function PlanningPage() {
     (t) =>
       (type === "all" || t.type === type) &&
       (statut === "all" || t.statut === statut) &&
-      (query === "" || t.titre.toLowerCase().includes(query) || t.reference.toLowerCase().includes(query)),
+      (query === "" ||
+        t.titre.toLowerCase().includes(query) ||
+        t.reference.toLowerCase().includes(query)),
   );
   const count = (s: StatutTache) => TACHES_MAINT.filter((t) => t.statut === s).length;
 
   const events: CalEvent[] = filtered.map((t) => {
     const d = new Date(t.date + "T09:00:00");
-    return { title: `${TYPE_LABEL[t.type]} — ${zoneNom(t.zoneId)}`, start: d, end: d, allDay: true, resource: t };
+    return {
+      title: `${TYPE_LABEL[t.type]} — ${zoneNom(t.zoneId)}`,
+      start: d,
+      end: d,
+      allDay: true,
+      resource: t,
+    };
   });
 
   const columns: Column<TacheMaint>[] = [
-    { key: "reference", label: "Référence", render: (t) => <span className="font-medium text-slate-800">{t.reference}</span> },
-    { key: "titre", label: "Intervention", render: (t) => <span className="text-slate-700">{t.titre}</span> },
-    { key: "type", label: "Type", render: (t) => <span className="text-slate-600">{TYPE_LABEL[t.type]}</span> },
-    { key: "date", label: "Date", render: (t) => <span className="text-slate-500 text-xs">{t.date}</span> },
-    { key: "priorite", label: "Priorité", align: "center", render: (t) => <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${prioColor(t.priorite)}`}>P{t.priorite}</span> },
-    { key: "technicien", label: "Technicien", render: (t) => <span className="text-slate-700">{techNom(t.technicienId)}</span> },
-    { key: "statut", label: "Statut", render: (t) => <StatusBadge label={STATUT_LABEL[t.statut]} tone={STATUT_TONE[t.statut]} /> },
+    {
+      key: "reference",
+      label: "Référence",
+      render: (t) => <span className="font-medium text-slate-800">{t.reference}</span>,
+    },
+    {
+      key: "titre",
+      label: "Intervention",
+      render: (t) => <span className="text-slate-700">{t.titre}</span>,
+    },
+    {
+      key: "type",
+      label: "Type",
+      render: (t) => <span className="text-slate-600">{TYPE_LABEL[t.type]}</span>,
+    },
+    {
+      key: "date",
+      label: "Date",
+      render: (t) => <span className="text-slate-500 text-xs">{t.date}</span>,
+    },
+    {
+      key: "priorite",
+      label: "Priorité",
+      align: "center",
+      render: (t) => (
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${prioColor(t.priorite)}`}>
+          P{t.priorite}
+        </span>
+      ),
+    },
+    {
+      key: "technicien",
+      label: "Technicien",
+      render: (t) => <span className="text-slate-700">{techNom(t.technicienId)}</span>,
+    },
+    {
+      key: "statut",
+      label: "Statut",
+      render: (t) => <StatusBadge label={STATUT_LABEL[t.statut]} tone={STATUT_TONE[t.statut]} />,
+    },
   ];
 
   const toggle = (
     <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
-      <button onClick={() => setVue("cal")} className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md ${vue === "cal" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"}`}>
+      <button
+        onClick={() => setVue("cal")}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md ${vue === "cal" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"}`}
+      >
         <CalendarDays size={15} /> Calendrier
       </button>
-      <button onClick={() => setVue("list")} className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md ${vue === "list" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"}`}>
+      <button
+        onClick={() => setVue("list")}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md ${vue === "list" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"}`}
+      >
         <List size={15} /> Liste
       </button>
     </div>
@@ -109,23 +167,55 @@ function PlanningPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader title="Planification des interventions" subtitle={`${filtered.length} interventions · relamping, rondes, maintenance`} actions={toggle} />
+      <ModuleHeader closeTo="/eclairage/map"
+        title="Planification des interventions"
+        subtitle={`${filtered.length} interventions · relamping, rondes, maintenance`}
+        actions={toggle}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard icon={CalIcon} label="Total" value={TACHES_MAINT.length} color="bg-amber-100 text-amber-700" />
-        <StatCard icon={Clock} label="Planifiées" value={count("PLANIFIEE")} color="bg-blue-100 text-blue-700" />
-        <StatCard icon={PlayCircle} label="En cours" value={count("EN_COURS")} color="bg-orange-100 text-orange-700" />
-        <StatCard icon={CheckCircle2} label="Terminées" value={count("TERMINEE")} color="bg-green-100 text-green-700" />
+        <StatCard
+          icon={CalIcon}
+          label="Total"
+          value={TACHES_MAINT.length}
+          color="bg-amber-100 text-amber-700"
+        />
+        <StatCard
+          icon={Clock}
+          label="Planifiées"
+          value={count("PLANIFIEE")}
+          color="bg-blue-100 text-blue-700"
+        />
+        <StatCard
+          icon={PlayCircle}
+          label="En cours"
+          value={count("EN_COURS")}
+          color="bg-orange-100 text-orange-700"
+        />
+        <StatCard
+          icon={CheckCircle2}
+          label="Terminées"
+          value={count("TERMINEE")}
+          color="bg-green-100 text-green-700"
+        />
       </div>
 
       <FilterBar search={q} onSearch={setQ}>
         <FilterSelect value={type} onChange={(v) => setType(v as any)}>
           <option value="all">Tous types</option>
-          {Object.entries(TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          {Object.entries(TYPE_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
         </FilterSelect>
         <FilterSelect value={statut} onChange={(v) => setStatut(v as any)}>
           <option value="all">Tous statuts</option>
-          {Object.entries(STATUT_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          {Object.entries(STATUT_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
         </FilterSelect>
       </FilterBar>
 
@@ -143,7 +233,12 @@ function PlanningPage() {
               popup
               onSelectEvent={(e: CalEvent) => setSel(e.resource)}
               eventPropGetter={(e: CalEvent) => ({
-                style: { backgroundColor: STATUT_COLOR[e.resource.statut], border: "none", borderRadius: 6, fontSize: 12 },
+                style: {
+                  backgroundColor: STATUT_COLOR[e.resource.statut],
+                  border: "none",
+                  borderRadius: 6,
+                  fontSize: 12,
+                },
               })}
               messages={{
                 today: "Aujourd'hui",

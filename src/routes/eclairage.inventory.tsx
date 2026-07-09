@@ -99,7 +99,7 @@ function InventoryPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Inventaire des luminaires"
         subtitle={`${filtered.length} luminaires · vue tabulaire unifiée`}
       />

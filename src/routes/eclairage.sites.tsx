@@ -18,7 +18,7 @@ function ZonesPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Zones / Secteurs d'éclairage"
         subtitle={`${ZONES.length} secteurs · ${totalLum} luminaires gérés`}
       />

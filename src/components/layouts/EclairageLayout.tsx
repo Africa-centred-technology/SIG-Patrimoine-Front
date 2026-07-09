@@ -11,7 +11,7 @@ import {
   FileBarChart2,
   Settings,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
 import { TopBar } from "@/components/shared/TopBar";
 import { ImpersonationBanner } from "@/components/shared/ImpersonationBanner";
@@ -35,7 +35,6 @@ export function EclairageLayout() {
   const { role, effectiveTenantId, hydrated } = useApp();
   const tenant = useTenant(effectiveTenantId);
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   useEffect(() => {
     if (hydrated && (!role || !effectiveTenantId)) navigate({ to: "/" });
   }, [hydrated, role, effectiveTenantId, navigate]);
@@ -43,22 +42,15 @@ export function EclairageLayout() {
 
   return (
     <div className="flex min-h-screen bg-stone-50">
-      {sidebarOpen && (
-        <Sidebar
-          theme={THEMES.eclairage}
-          items={items}
-          brandTop="Green Éclairage"
-          brandSub={tenant?.nom ?? "—"}
-          onClose={() => setSidebarOpen(false)}
-        />
-      )}
+      <Sidebar
+        theme={THEMES.eclairage}
+        items={items}
+        brandTop="Green Éclairage"
+        brandSub={tenant?.nom ?? "—"}
+      />
       <div className="flex-1 flex flex-col min-w-0">
         <ImpersonationBanner />
-        <TopBar
-          title="Green Éclairage"
-          subtitle={tenant?.nom}
-          onMenuClick={sidebarOpen ? undefined : () => setSidebarOpen(true)}
-        />
+        <TopBar title="Green Éclairage" subtitle={tenant?.nom} />
         <main className="flex-1 p-6 overflow-auto">
           <Outlet />
         </main>

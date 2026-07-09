@@ -99,7 +99,7 @@ function TeamsPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Techniciens & habilitations"
         subtitle={`${filtered.length} techniciens · habilitations électriques B1/B2/BR…`}
       />

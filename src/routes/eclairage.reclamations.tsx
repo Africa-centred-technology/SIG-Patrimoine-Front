@@ -116,7 +116,7 @@ function PannesPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Signalements de panne"
         subtitle={`${filtered.length} signalements · cycle Nouveau → En cours → Résolu → Clôturé`}
       />

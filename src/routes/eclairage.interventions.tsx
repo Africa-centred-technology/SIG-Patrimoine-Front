@@ -72,7 +72,7 @@ function InterventionsPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Suivi des interventions électriques"
         subtitle={`${filtered.length} interventions · matériel, durée, technicien`}
       />

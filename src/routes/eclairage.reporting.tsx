@@ -52,7 +52,7 @@ function ReportingPage() {
 
   return (
     <div className="space-y-6">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Rapports & performance énergétique"
         subtitle="Consommation, coûts, taux LED, économies et bilan carbone"
       />

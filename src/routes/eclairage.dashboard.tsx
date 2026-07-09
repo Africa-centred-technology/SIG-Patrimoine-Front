@@ -47,7 +47,7 @@ function DashboardEclairage() {
 
   return (
     <div className="space-y-6">
-      <ModuleHeader
+      <ModuleHeader closeTo="/eclairage/map"
         title="Tableau de bord — Éclairage"
         subtitle={`${LUMINAIRES.length} points lumineux · ${ouv.length} signalements ouverts`}
       />
