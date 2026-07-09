@@ -14,12 +14,60 @@ export interface Technicien {
 }
 
 export const TECHNICIENS: Technicien[] = [
-  { id: "tech-1", nom: "Hicham Amrani", equipe: "Réseau Nord", habilitations: ["B1", "B2", "BR"], statut: "DISPONIBLE", interventionsMois: 18, tel: "06 61 22 11 03" },
-  { id: "tech-2", nom: "Salma Berrada", equipe: "Réseau Sud", habilitations: ["B1", "BR"], statut: "OCCUPE", interventionsMois: 21, tel: "06 62 33 44 55" },
-  { id: "tech-3", nom: "Karim Fadili", equipe: "Maintenance", habilitations: ["B2", "BC", "BR"], statut: "DISPONIBLE", interventionsMois: 14, tel: "06 63 55 66 77" },
-  { id: "tech-4", nom: "Nadia El Mansouri", equipe: "Astreinte", habilitations: ["B1", "BR"], statut: "ASTREINTE", interventionsMois: 9, tel: "06 64 77 88 99" },
-  { id: "tech-5", nom: "Youssef Tahiri", equipe: "Réseau Nord", habilitations: ["B1", "B2", "BC", "BR"], statut: "CONGE", interventionsMois: 0, tel: "06 65 99 00 11" },
-  { id: "tech-6", nom: "Imane Chraibi", equipe: "Maintenance", habilitations: ["B1", "BR"], statut: "DISPONIBLE", interventionsMois: 16, tel: "06 66 11 22 33" },
+  {
+    id: "tech-1",
+    nom: "Hicham Amrani",
+    equipe: "Réseau Nord",
+    habilitations: ["B1", "B2", "BR"],
+    statut: "DISPONIBLE",
+    interventionsMois: 18,
+    tel: "06 61 22 11 03",
+  },
+  {
+    id: "tech-2",
+    nom: "Salma Berrada",
+    equipe: "Réseau Sud",
+    habilitations: ["B1", "BR"],
+    statut: "OCCUPE",
+    interventionsMois: 21,
+    tel: "06 62 33 44 55",
+  },
+  {
+    id: "tech-3",
+    nom: "Karim Fadili",
+    equipe: "Maintenance",
+    habilitations: ["B2", "BC", "BR"],
+    statut: "DISPONIBLE",
+    interventionsMois: 14,
+    tel: "06 63 55 66 77",
+  },
+  {
+    id: "tech-4",
+    nom: "Nadia El Mansouri",
+    equipe: "Astreinte",
+    habilitations: ["B1", "BR"],
+    statut: "ASTREINTE",
+    interventionsMois: 9,
+    tel: "06 64 77 88 99",
+  },
+  {
+    id: "tech-5",
+    nom: "Youssef Tahiri",
+    equipe: "Réseau Nord",
+    habilitations: ["B1", "B2", "BC", "BR"],
+    statut: "CONGE",
+    interventionsMois: 0,
+    tel: "06 65 99 00 11",
+  },
+  {
+    id: "tech-6",
+    nom: "Imane Chraibi",
+    equipe: "Maintenance",
+    habilitations: ["B1", "BR"],
+    statut: "DISPONIBLE",
+    interventionsMois: 16,
+    tel: "06 66 11 22 33",
+  },
 ];
 
 const seeded = (seed: number) => {
@@ -44,7 +92,13 @@ export interface TacheMaint {
   luminaireId?: string;
 }
 
-const TYPES_TACHE: TypeTacheMaint[] = ["RELAMPING", "RONDE", "PREVENTIVE", "CURATIVE", "REMPLACEMENT"];
+const TYPES_TACHE: TypeTacheMaint[] = [
+  "RELAMPING",
+  "RONDE",
+  "PREVENTIVE",
+  "CURATIVE",
+  "REMPLACEMENT",
+];
 const STATUTS_TACHE: StatutTache[] = ["PLANIFIEE", "PLANIFIEE", "EN_COURS", "TERMINEE", "TERMINEE"];
 const TITRE_TACHE: Record<TypeTacheMaint, string> = {
   RELAMPING: "Relamping",

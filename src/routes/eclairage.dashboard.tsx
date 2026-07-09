@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lightbulb, AlertTriangle, Zap, Gauge, Percent, Bell } from "lucide-react";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { ModuleHeader } from "@/components/shared/ModuleHeader";
 import { LUMINAIRES, PANNES, ZONES, CONSO_ENERGIE } from "@/lib/mockData";
 import { consoTotaleMois, coutMAD, tauxPanne, tauxLED, puissanceInstallee, pannesOuvertes, consoParMois } from "@/lib/eclairage";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend, CartesianGrid } from "recharts";
@@ -24,6 +25,10 @@ function DashboardEclairage() {
 
   return (
     <div className="space-y-6">
+      <ModuleHeader
+        title="Tableau de bord — Éclairage"
+        subtitle={`${LUMINAIRES.length} points lumineux · ${ouv.length} signalements ouverts`}
+      />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <StatCard icon={Lightbulb} label="Points lumineux" value={LUMINAIRES.length} color="bg-amber-100 text-amber-700" />
         <StatCard icon={AlertTriangle} label="% en panne" value={`${(tp * 100).toFixed(1)}%`} color="bg-red-100 text-red-700" />
@@ -82,12 +87,17 @@ function DashboardEclairage() {
           <h3 className="font-semibold text-slate-900 mb-4">Dernières pannes signalées</h3>
           <ul className="space-y-2 text-sm">
             {ouv.slice(0, 6).map(p => (
-              <li key={p.id} className="flex items-center justify-between border-b pb-2 last:border-0">
-                <div>
-                  <div className="font-medium text-slate-800">{p.reference}</div>
-                  <div className="text-xs text-slate-500">{p.description}</div>
-                </div>
-                <StatusBadge label={p.statut} tone={p.statut === "NOUVEAU" ? "red" : "orange"} />
+              <li key={p.id}>
+                <Link
+                  to="/eclairage/reclamations"
+                  className="flex items-center justify-between border-b pb-2 last:border-0 hover:bg-amber-50/40 -mx-2 px-2 rounded"
+                >
+                  <div>
+                    <div className="font-medium text-slate-800">{p.reference}</div>
+                    <div className="text-xs text-slate-500">{p.description}</div>
+                  </div>
+                  <StatusBadge label={p.statut} tone={p.statut === "NOUVEAU" ? "red" : "orange"} />
+                </Link>
               </li>
             ))}
           </ul>

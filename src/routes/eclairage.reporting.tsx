@@ -16,6 +16,7 @@ import {
   Legend,
 } from "recharts";
 import { StatCard } from "@/components/shared/StatCard";
+import { ModuleHeader } from "@/components/shared/ModuleHeader";
 import { LUMINAIRES, ZONES, CONSO_ENERGIE } from "@/lib/mockData";
 import {
   consoTotaleMois,
@@ -35,10 +36,12 @@ function ReportingPage() {
   const conso = consoTotaleMois(LUMINAIRES);
   const eco = economieVsSodium(LUMINAIRES);
   const consoData = consoParMois(CONSO_ENERGIE, ZONES);
-  const parType = ["LED", "SODIUM", "PROJECTEUR", "BORNE", "APPLIQUE", "GUIRLANDE"].map((t) => ({
-    name: t,
-    value: LUMINAIRES.filter((l) => l.type === t).length,
-  })).filter((d) => d.value > 0);
+  const parType = ["LED", "SODIUM", "PROJECTEUR", "BORNE", "APPLIQUE", "GUIRLANDE"]
+    .map((t) => ({
+      name: t,
+      value: LUMINAIRES.filter((l) => l.type === t).length,
+    }))
+    .filter((d) => d.value > 0);
 
   const rapports = [
     { titre: "Rapport mensuel — Juin 2026", type: "Mensuel", pages: 24 },
@@ -49,16 +52,33 @@ function ReportingPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Rapports & performance énergétique</h2>
-        <p className="text-sm text-slate-500">Consommation, coûts, taux LED, économies et bilan carbone</p>
-      </div>
+      <ModuleHeader title="Rapports & performance énergétique" subtitle="Consommation, coûts, taux LED, économies et bilan carbone" />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard icon={Zap} label="Conso / mois" value={`${conso.toFixed(0)} kWh`} color="bg-sky-100 text-sky-700" />
-        <StatCard icon={Coins} label="Coût / mois" value={`${coutMAD(conso).toLocaleString("fr-FR")} MAD`} color="bg-amber-100 text-amber-700" />
-        <StatCard icon={Gauge} label="Taux LED" value={`${(tauxLED(LUMINAIRES) * 100).toFixed(0)}%`} color="bg-emerald-100 text-emerald-700" />
-        <StatCard icon={Leaf} label="CO₂ évité / mois" value={`${co2Evite(eco).toFixed(0)} kg`} color="bg-green-100 text-green-700" />
+        <StatCard
+          icon={Zap}
+          label="Conso / mois"
+          value={`${conso.toFixed(0)} kWh`}
+          color="bg-sky-100 text-sky-700"
+        />
+        <StatCard
+          icon={Coins}
+          label="Coût / mois"
+          value={`${coutMAD(conso).toLocaleString("fr-FR")} MAD`}
+          color="bg-amber-100 text-amber-700"
+        />
+        <StatCard
+          icon={Gauge}
+          label="Taux LED"
+          value={`${(tauxLED(LUMINAIRES) * 100).toFixed(0)}%`}
+          color="bg-emerald-100 text-emerald-700"
+        />
+        <StatCard
+          icon={Leaf}
+          label="CO₂ évité / mois"
+          value={`${co2Evite(eco).toFixed(0)} kg`}
+          color="bg-green-100 text-green-700"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -82,7 +102,14 @@ function ReportingPage() {
           <div className="h-64">
             <ResponsiveContainer>
               <PieChart>
-                <Pie data={parType} dataKey="value" nameKey="name" innerRadius={50} outerRadius={90} paddingAngle={2}>
+                <Pie
+                  data={parType}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={50}
+                  outerRadius={90}
+                  paddingAngle={2}
+                >
                   {parType.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
@@ -117,7 +144,9 @@ function ReportingPage() {
             <div key={r.titre} className="bg-white rounded-xl border p-5 shadow-sm">
               <FileText className="text-amber-500 mb-2" />
               <div className="font-semibold text-slate-900 text-sm">{r.titre}</div>
-              <div className="text-xs text-slate-500 mt-1">{r.type} · {r.pages} pages</div>
+              <div className="text-xs text-slate-500 mt-1">
+                {r.type} · {r.pages} pages
+              </div>
               <div className="mt-4 flex gap-2">
                 <button className="text-xs px-3 py-1.5 rounded-md bg-amber-500 text-white flex items-center gap-1">
                   <Download size={12} /> PDF

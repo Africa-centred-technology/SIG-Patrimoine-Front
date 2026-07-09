@@ -1,8 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Calendar, Clock, PlayCircle, CheckCircle2, Search, X } from "lucide-react";
+import { Calendar, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
 import { StatCard } from "@/components/shared/StatCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { ModuleHeader } from "@/components/shared/ModuleHeader";
+import { FilterBar, FilterSelect } from "@/components/shared/FilterBar";
+import { DataTable, type Column } from "@/components/shared/DataTable";
+import { DetailModal, DetailRow } from "@/components/shared/DetailModal";
 import { ZONES } from "@/lib/mockData";
 import {
   TACHES_MAINT,
@@ -50,14 +54,19 @@ function PlanningPage() {
   );
   const count = (s: StatutTache) => TACHES_MAINT.filter((t) => t.statut === s).length;
 
+  const columns: Column<TacheMaint>[] = [
+    { key: "reference", label: "Référence", render: (t) => <span className="font-medium text-slate-800">{t.reference}</span> },
+    { key: "titre", label: "Intervention", render: (t) => <span className="text-slate-700">{t.titre}</span> },
+    { key: "type", label: "Type", render: (t) => <span className="text-slate-600">{TYPE_LABEL[t.type]}</span> },
+    { key: "date", label: "Date", render: (t) => <span className="text-slate-500 text-xs">{t.date}</span> },
+    { key: "priorite", label: "Priorité", align: "center", render: (t) => <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${prioColor(t.priorite)}`}>P{t.priorite}</span> },
+    { key: "technicien", label: "Technicien", render: (t) => <span className="text-slate-700">{techNom(t.technicienId)}</span> },
+    { key: "statut", label: "Statut", render: (t) => <StatusBadge label={STATUT_LABEL[t.statut]} tone={STATUT_TONE[t.statut]} /> },
+  ];
+
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Planification des interventions</h2>
-        <p className="text-sm text-slate-500">
-          {filtered.length} interventions · relamping, rondes, maintenance
-        </p>
-      </div>
+      <ModuleHeader title="Planification des interventions" subtitle={`${filtered.length} interventions · relamping, rondes, maintenance`} />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard icon={Calendar} label="Total" value={TACHES_MAINT.length} color="bg-amber-100 text-amber-700" />
@@ -66,96 +75,31 @@ function PlanningPage() {
         <StatCard icon={CheckCircle2} label="Terminées" value={count("TERMINEE")} color="bg-green-100 text-green-700" />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Rechercher…"
-            className="text-sm border rounded-lg bg-white pl-9 pr-3 py-2 w-56 outline-none focus:ring-2 focus:ring-amber-400"
-          />
-        </div>
-        <select value={type} onChange={(e) => setType(e.target.value as any)} className="text-sm border rounded-lg bg-white px-3 py-2">
+      <FilterBar search={q} onSearch={setQ}>
+        <FilterSelect value={type} onChange={(v) => setType(v as any)}>
           <option value="all">Tous types</option>
-          {Object.entries(TYPE_LABEL).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
-          ))}
-        </select>
-        <select value={statut} onChange={(e) => setStatut(e.target.value as any)} className="text-sm border rounded-lg bg-white px-3 py-2">
+          {Object.entries(TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+        </FilterSelect>
+        <FilterSelect value={statut} onChange={(v) => setStatut(v as any)}>
           <option value="all">Tous statuts</option>
-          {Object.entries(STATUT_LABEL).map(([k, v]) => (
-            <option key={k} value={k}>{v}</option>
-          ))}
-        </select>
-      </div>
+          {Object.entries(STATUT_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+        </FilterSelect>
+      </FilterBar>
 
-      <div className="bg-white rounded-xl border overflow-hidden shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-600">
-            <tr>
-              <th className="text-left px-4 py-3">Référence</th>
-              <th className="text-left px-4 py-3">Intervention</th>
-              <th className="text-left px-4 py-3">Type</th>
-              <th className="text-left px-4 py-3">Date</th>
-              <th className="text-center px-4 py-3">Priorité</th>
-              <th className="text-left px-4 py-3">Technicien</th>
-              <th className="text-left px-4 py-3">Statut</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filtered.map((t) => (
-              <tr key={t.id} onClick={() => setSel(t)} className="hover:bg-amber-50/40 cursor-pointer">
-                <td className="px-4 py-3 font-medium text-slate-800">{t.reference}</td>
-                <td className="px-4 py-3 text-slate-700">{t.titre}</td>
-                <td className="px-4 py-3 text-slate-600">{TYPE_LABEL[t.type]}</td>
-                <td className="px-4 py-3 text-slate-500 text-xs">{t.date}</td>
-                <td className="px-4 py-3 text-center">
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${prioColor(t.priorite)}`}>
-                    P{t.priorite}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-slate-700">{techNom(t.technicienId)}</td>
-                <td className="px-4 py-3">
-                  <StatusBadge label={STATUT_LABEL[t.statut]} tone={STATUT_TONE[t.statut]} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable columns={columns} data={filtered} rowKey={(t) => t.id} onRowClick={setSel} />
 
       {sel && (
-        <div className="fixed inset-0 z-[9998] bg-black/40 flex items-center justify-center p-4" onClick={() => setSel(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h3 className="font-bold text-slate-900">{sel.reference}</h3>
-              <button onClick={() => setSel(null)} className="text-slate-400 hover:text-slate-700">
-                <X size={18} />
-              </button>
-            </div>
-            <div className="p-6 space-y-2 text-sm">
-              <Row label="Intervention" value={sel.titre} />
-              <Row label="Type" value={TYPE_LABEL[sel.type]} />
-              <Row label="Statut" value={STATUT_LABEL[sel.statut]} />
-              <Row label="Priorité" value={`P${sel.priorite}`} />
-              <Row label="Date" value={sel.date} />
-              <Row label="Technicien" value={techNom(sel.technicienId)} />
-              <Row label="Secteur" value={zoneNom(sel.zoneId)} />
-              {sel.luminaireId && <Row label="Luminaire" value={sel.luminaireId} />}
-            </div>
-          </div>
-        </div>
+        <DetailModal title={sel.reference} onClose={() => setSel(null)}>
+          <DetailRow label="Intervention" value={sel.titre} />
+          <DetailRow label="Type" value={TYPE_LABEL[sel.type]} />
+          <DetailRow label="Statut" value={STATUT_LABEL[sel.statut]} />
+          <DetailRow label="Priorité" value={`P${sel.priorite}`} />
+          <DetailRow label="Date" value={sel.date} />
+          <DetailRow label="Technicien" value={techNom(sel.technicienId)} />
+          <DetailRow label="Secteur" value={zoneNom(sel.zoneId)} />
+          {sel.luminaireId && <DetailRow label="Luminaire" value={sel.luminaireId} />}
+        </DetailModal>
       )}
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-slate-800 font-medium text-right">{value}</span>
     </div>
   );
 }

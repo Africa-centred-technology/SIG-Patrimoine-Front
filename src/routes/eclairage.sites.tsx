@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layers, Lightbulb, AlertTriangle, Zap, MapPin } from "lucide-react";
 import { StatCard } from "@/components/shared/StatCard";
+import { ModuleHeader } from "@/components/shared/ModuleHeader";
 import { ZONES, LUMINAIRES } from "@/lib/mockData";
 import { kWhMois, coutMAD, SEUIL_ALERTE_PANNE } from "@/lib/eclairage";
 
@@ -17,16 +18,33 @@ function ZonesPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-xl font-bold text-slate-900">Zones / Secteurs d'éclairage</h2>
-        <p className="text-sm text-slate-500">{ZONES.length} secteurs · {totalLum} luminaires gérés</p>
-      </div>
+      <ModuleHeader title="Zones / Secteurs d'éclairage" subtitle={`${ZONES.length} secteurs · ${totalLum} luminaires gérés`} />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard icon={Layers} label="Secteurs" value={ZONES.length} color="bg-amber-100 text-amber-700" />
-        <StatCard icon={Lightbulb} label="Luminaires" value={totalLum} color="bg-yellow-100 text-yellow-700" />
-        <StatCard icon={Zap} label="Puissance" value={`${puissanceTotale.toFixed(1)} kW`} color="bg-sky-100 text-sky-700" />
-        <StatCard icon={AlertTriangle} label="Secteurs en alerte" value={enAlerte} color="bg-red-100 text-red-700" />
+        <StatCard
+          icon={Layers}
+          label="Secteurs"
+          value={ZONES.length}
+          color="bg-amber-100 text-amber-700"
+        />
+        <StatCard
+          icon={Lightbulb}
+          label="Luminaires"
+          value={totalLum}
+          color="bg-yellow-100 text-yellow-700"
+        />
+        <StatCard
+          icon={Zap}
+          label="Puissance"
+          value={`${puissanceTotale.toFixed(1)} kW`}
+          color="bg-sky-100 text-sky-700"
+        />
+        <StatCard
+          icon={AlertTriangle}
+          label="Secteurs en alerte"
+          value={enAlerte}
+          color="bg-red-100 text-red-700"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -45,7 +63,9 @@ function ZonesPage() {
                   <h3 className="font-semibold text-slate-900">{z.nom}</h3>
                   <p className="text-xs text-slate-500 mt-1">Allumage : {z.calendrier_allumage}</p>
                 </div>
-                <div className={`h-10 w-10 rounded-full flex items-center justify-center ${alerte ? "bg-red-100" : "bg-amber-100"}`}>
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center ${alerte ? "bg-red-100" : "bg-amber-100"}`}
+                >
                   <Layers className={alerte ? "text-red-600" : "text-amber-700"} size={18} />
                 </div>
               </div>
@@ -60,10 +80,15 @@ function ZonesPage() {
               <div className="mt-4">
                 <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
                   <span>Taux de panne</span>
-                  <span className={alerte ? "text-red-600 font-semibold" : ""}>{tauxPanne.toFixed(0)}%</span>
+                  <span className={alerte ? "text-red-600 font-semibold" : ""}>
+                    {tauxPanne.toFixed(0)}%
+                  </span>
                 </div>
                 <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <div className={`h-full ${alerte ? "bg-red-500" : "bg-amber-500"}`} style={{ width: `${Math.min(100, tauxPanne)}%` }} />
+                  <div
+                    className={`h-full ${alerte ? "bg-red-500" : "bg-amber-500"}`}
+                    style={{ width: `${Math.min(100, tauxPanne)}%` }}
+                  />
                 </div>
               </div>
 
@@ -71,7 +96,10 @@ function ZonesPage() {
                 <span className="text-xs text-slate-500">
                   Conso ≈ {conso.toFixed(0)} kWh/mois · {coutMAD(conso).toLocaleString("fr-FR")} MAD
                 </span>
-                <Link to="/eclairage/map" className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium">
+                <Link
+                  to="/eclairage/map"
+                  className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium"
+                >
                   <MapPin size={13} /> Carte
                 </Link>
               </div>
