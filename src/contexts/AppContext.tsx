@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
-import type { Tenant, Licence, ProduitCle, Role, PlanLicence } from "@/lib/types";
-import { INITIAL_TENANTS, INITIAL_LICENCES } from "@/lib/mockData";
+import type { Tenant, Licence, ProduitCle, Role, PlanLicence, ProduitDef } from "@/lib/types";
+import { INITIAL_TENANTS, INITIAL_LICENCES, INITIAL_PRODUITS } from "@/lib/mockData";
 
 interface AppState {
   role: Role | null;
@@ -9,6 +9,7 @@ interface AppState {
   activeProduct: ProduitCle | null;
   tenants: Tenant[];
   licences: Licence[];
+  produits: ProduitDef[];
   hydrated: boolean;
   loginAsSuperAdmin: () => void;
   loginAsTenant: (tenantId: string) => void;
@@ -22,6 +23,9 @@ interface AppState {
   reactiverLicence: (id: string) => void;
   revoquerLicence: (id: string) => void;
   changerPlan: (id: string, plan: PlanLicence) => void;
+  // CRUD produits paramétrables (Super-Admin)
+  upsertProduit: (p: ProduitDef) => void;
+  deleteProduit: (cle: ProduitCle) => void;
   effectiveTenantId: string | null;
 }
 
@@ -40,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeProduct, setActiveProductState] = useState<ProduitCle | null>(null);
   const [tenants, setTenants] = useState<Tenant[]>(INITIAL_TENANTS);
   const [licences, setLicences] = useState<Licence[]>(INITIAL_LICENCES);
+  const [produits, setProduits] = useState<ProduitDef[]>(INITIAL_PRODUITS);
   const [hydrated, setHydrated] = useState(false);
 
   // Hydratation depuis localStorage (client uniquement)
@@ -54,6 +59,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (s.activeProduct) setActiveProductState(s.activeProduct);
         if (Array.isArray(s.tenants) && s.tenants.length) setTenants(s.tenants);
         if (Array.isArray(s.licences) && s.licences.length) setLicences(s.licences);
+        if (Array.isArray(s.produits) && s.produits.length) setProduits(s.produits);
       }
     } catch {}
     setHydrated(true);
@@ -64,10 +70,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(
         "sig-patrimoine-state",
-        JSON.stringify({ role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences }),
+        JSON.stringify({ role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences, produits }),
       );
     } catch {}
-  }, [hydrated, role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences]);
+  }, [hydrated, role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences, produits]);
 
   const loginAsSuperAdmin = useCallback(() => {
     setRole("SUPERADMIN");
@@ -170,6 +176,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const changerPlan = (id: string, plan: PlanLicence) =>
     setLicences((prev) => prev.map((l) => (l.id === id ? { ...l, plan, prixMensuelMAD: PLAN_PRIX[plan].prix, seats: PLAN_PRIX[plan].seats } : l)));
 
+  // ── CRUD produits paramétrables ──────────────────────────────────────────
+  const upsertProduit: AppState["upsertProduit"] = (p) =>
+    setProduits((prev) => {
+      const exists = prev.some((x) => x.cle === p.cle);
+      return exists ? prev.map((x) => (x.cle === p.cle ? p : x)) : [...prev, p];
+    });
+
+  const deleteProduit: AppState["deleteProduit"] = (cle) =>
+    setProduits((prev) => prev.filter((x) => x.cle !== cle));
+
   const effectiveTenantId = impersonatedTenantId ?? currentTenantId;
 
   return (
@@ -181,6 +197,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         activeProduct,
         tenants,
         licences,
+        produits,
         hydrated,
         loginAsSuperAdmin,
         loginAsTenant,
@@ -194,6 +211,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         reactiverLicence,
         revoquerLicence,
         changerPlan,
+        upsertProduit,
+        deleteProduit,
         effectiveTenantId,
       }}
     >

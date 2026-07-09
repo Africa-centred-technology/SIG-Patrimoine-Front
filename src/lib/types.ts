@@ -1,5 +1,27 @@
-export type ProduitCle = "ESPACES_VERTS" | "ECLAIRAGE";
+export type ProduitCle = "ESPACES_VERTS" | "ECLAIRAGE" | string;
 export type PlanLicence = "STARTER" | "PRO" | "ENTERPRISE";
+
+// ── Produits paramétrables ─────────────────────────────────────────────────
+// Un produit du catalogue SIG Patrimoine est 100 % configurable par le
+// Super-Admin : identité (nom, description, icône, couleurs), statut, et une
+// liste de MODULES activables. Selon le tenant, on n'offre que les modules
+// nécessaires.
+export interface ModuleProduit {
+  cle: string; // identifiant stable ("cartographie", "inventaire"...)
+  nom: string;
+  actif: boolean; // proposé par défaut à l'activation du produit
+}
+
+export interface ProduitDef {
+  cle: ProduitCle; // identifiant du produit (ESPACES_VERTS, ECLAIRAGE, ou custom)
+  nom: string;
+  description: string;
+  icone: string; // nom d'icône lucide (ex. "Trees", "Lightbulb", "Package")
+  accentFrom: string; // classe gradient de début (ex. "from-emerald-700")
+  accentTo: string; // classe gradient de fin (ex. "to-emerald-950")
+  actif: boolean; // produit publié / disponible sur la plateforme
+  modules: ModuleProduit[];
+}
 export type StatutLicence = "ESSAI" | "ACTIVE" | "EXPIREE" | "SUSPENDUE";
 export type StatutTenant = "ACTIF" | "SUSPENDU" | "EN_ATTENTE";
 export type Role = "SUPERADMIN" | "TENANT_ADMIN" | "SUPERVISEUR" | "AGENT" | "CLIENT";

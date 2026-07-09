@@ -6,9 +6,59 @@ import type {
   ZoneEclairage,
   Panne,
   ConsoMois,
+  ProduitDef,
 } from "./types";
 
 export const CENTER = { lat: 32.216, lng: -7.937 };
+
+// Catalogue initial des produits (paramétrable par le Super-Admin).
+export const INITIAL_PRODUITS: ProduitDef[] = [
+  {
+    cle: "ESPACES_VERTS",
+    nom: "Espaces Verts",
+    description: "SIG de gestion du patrimoine végétal.",
+    icone: "Trees",
+    accentFrom: "from-emerald-700",
+    accentTo: "to-emerald-950",
+    actif: true,
+    modules: [
+      { cle: "dashboard", nom: "Tableau de bord", actif: true },
+      { cle: "cartographie", nom: "Cartographie", actif: true },
+      { cle: "inventaire", nom: "Inventaire", actif: true },
+      { cle: "sites", nom: "Sites", actif: true },
+      { cle: "clients", nom: "Clients", actif: true },
+      { cle: "produits-phyto", nom: "Produits phyto", actif: true },
+      { cle: "planification", nom: "Planification", actif: true },
+      { cle: "reclamations", nom: "Réclamations", actif: true },
+      { cle: "suivi-taches", nom: "Suivi des tâches", actif: true },
+      { cle: "rh", nom: "RH / Équipes", actif: true },
+      { cle: "rapports", nom: "Rapports", actif: true },
+      { cle: "parametres", nom: "Paramètres", actif: true },
+    ],
+  },
+  {
+    cle: "ECLAIRAGE",
+    nom: "Green Éclairage",
+    description: "SIG de gestion du patrimoine d'éclairage public.",
+    icone: "Lightbulb",
+    accentFrom: "from-amber-500",
+    accentTo: "to-stone-900",
+    actif: true,
+    modules: [
+      { cle: "dashboard", nom: "Tableau de bord", actif: true },
+      { cle: "cartographie", nom: "Cartographie", actif: true },
+      { cle: "inventaire", nom: "Inventaire luminaires", actif: true },
+      { cle: "zones", nom: "Zones / Secteurs", actif: true },
+      { cle: "planification", nom: "Planification (maintenance)", actif: true },
+      { cle: "pannes", nom: "Signalements de panne", actif: true },
+      { cle: "interventions", nom: "Suivi des interventions", actif: true },
+      { cle: "energie", nom: "Énergie & Performance", actif: true },
+      { cle: "rh", nom: "RH / Techniciens", actif: true },
+      { cle: "rapports", nom: "Rapports", actif: true },
+      { cle: "parametres", nom: "Paramètres", actif: true },
+    ],
+  },
+];
 
 export const INITIAL_TENANTS: Tenant[] = [
   {

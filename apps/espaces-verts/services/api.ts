@@ -16,6 +16,21 @@ import type { Utilisateur } from '../types/users';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
+// Mode démo : quand l'app est intégrée dans la console SIG Patrimoine (basename
+// défini), il n'y a pas de backend. On DÉSACTIVE tous les appels /api : apiFetch
+// renvoie immédiatement une réponse vide (aucun réseau, aucun timeout, aucune
+// erreur). Les vraies données mock viendront se brancher ici plus tard.
+const API_DISABLED =
+  Boolean((import.meta as any).env?.VITE_EV_BASENAME) &&
+  (import.meta as any).env?.VITE_EV_BASENAME !== '/';
+
+function emptyDemoResponse(): Response {
+  return new Response('[]', {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
 // ==============================================================================
 // AUTH TOKENS
 // ==============================================================================
@@ -136,6 +151,11 @@ function withTimeout(
 }
 
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  // Mode démo sans backend : court-circuite tout appel réseau.
+  if (API_DISABLED) {
+    return emptyDemoResponse();
+  }
+
   const token = localStorage.getItem('token');
   const { signal, cleanup, isCallerAbort } = withTimeout(options, DEFAULT_TIMEOUT_MS);
 
