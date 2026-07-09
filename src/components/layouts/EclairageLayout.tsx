@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "@tanstack/react-router";
+import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Map,
@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
-import { TopBar } from "@/components/shared/TopBar";
 import { ImpersonationBanner } from "@/components/shared/ImpersonationBanner";
+import { EclairageMap } from "@/components/eclairage/EclairageMap";
 import { THEMES } from "@/lib/theme";
 import { useApp, useTenant } from "@/contexts/AppContext";
 
@@ -35,25 +35,40 @@ export function EclairageLayout() {
   const { role, effectiveTenantId, hydrated } = useApp();
   const tenant = useTenant(effectiveTenantId);
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
   useEffect(() => {
     if (hydrated && (!role || !effectiveTenantId)) navigate({ to: "/" });
   }, [hydrated, role, effectiveTenantId, navigate]);
   if (!hydrated) return null;
 
+  const isMapView = pathname === "/eclairage/map" || pathname === "/eclairage";
+
   return (
-    <div className="flex min-h-screen bg-stone-50">
+    <div className="flex h-screen overflow-hidden bg-stone-900">
       <Sidebar
         theme={THEMES.eclairage}
         items={items}
         brandTop="Green Éclairage"
         brandSub={tenant?.nom ?? "—"}
       />
-      <div className="flex-1 flex flex-col min-w-0">
-        <ImpersonationBanner />
-        <TopBar title="Green Éclairage" subtitle={tenant?.nom} />
-        <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
-        </main>
+
+      {/* Zone principale : carte persistante + panneau flottant des modules */}
+      <div className="relative flex-1 min-w-0">
+        {/* Layer 0 — carte toujours présente (interactive seulement sur la vue carte) */}
+        <div className={`absolute inset-0 ${isMapView ? "" : "pointer-events-none"}`}>
+          <EclairageMap active={isMapView} />
+        </div>
+
+        {/* Panneau flottant du module (masqué sur la vue carte) */}
+        {!isMapView && (
+          <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
+            <ImpersonationBanner />
+            <div className="flex-1 overflow-y-auto p-6">
+              <Outlet />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
