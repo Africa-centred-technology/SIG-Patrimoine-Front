@@ -222,7 +222,7 @@ export function TileMap({
               title={m.title}
             >
               <span
-                className={`block rounded-full ring-2 shadow-md hover:scale-125 transition-transform ${isSel ? "ring-slate-900" : "ring-white"}`}
+                className={`block rounded-full ring-2 shadow-md ${isSel ? "ring-slate-900" : "ring-white"}`}
                 style={{
                   width: isSel ? s + 6 : s,
                   height: isSel ? s + 6 : s,
