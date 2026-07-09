@@ -36,7 +36,7 @@ interface TileMapProps {
   lines?: MapLine[];
   center?: { lat: number; lng: number };
   zoom?: number;
-  legend?: Array<{ color: string; label: string }>;
+  legend?: Array<{ color: string; label: string; icon?: IconCmp; line?: boolean }>;
   height?: string;
   /** id d'un marqueur à centrer + sélectionner (ex. depuis l'inventaire). */
   focusId?: string;
@@ -432,15 +432,29 @@ export function TileMap({
       {legend && legend.length > 0 && (
         <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3 text-xs space-y-1 border border-slate-200 max-h-56 overflow-auto">
           <div className="font-semibold text-slate-700 mb-1">Légende</div>
-          {legend.map((l, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <span
-                className="h-3 w-3 rounded-full ring-1 ring-white"
-                style={{ backgroundColor: l.color }}
-              />
-              <span className="text-slate-700">{l.label}</span>
-            </div>
-          ))}
+          {legend.map((l, i) => {
+            const LIcon = l.icon;
+            return (
+              <div key={i} className="flex items-center gap-2">
+                {l.line ? (
+                  <span className="w-4 border-t-2 rounded" style={{ borderColor: l.color }} />
+                ) : LIcon ? (
+                  <span
+                    className="flex items-center justify-center rounded-full ring-1 ring-white shrink-0"
+                    style={{ width: 16, height: 16, backgroundColor: l.color }}
+                  >
+                    <LIcon size={10} className="text-white" />
+                  </span>
+                ) : (
+                  <span
+                    className="h-3 w-3 rounded-full ring-1 ring-white"
+                    style={{ backgroundColor: l.color }}
+                  />
+                )}
+                <span className="text-slate-700">{l.label}</span>
+              </div>
+            );
+          })}
         </div>
       )}
 

@@ -151,13 +151,14 @@ function MapEclairage() {
   ];
 
   const legend = [
-    { color: "#f59e0b", label: "LED" },
-    { color: "#f97316", label: "Sodium (SHP)" },
-    { color: "#eab308", label: "Projecteur" },
-    { color: "#a78bfa", label: "Guirlande / festif" },
-    { color: "#0369a1", label: "Armoire / câble réseau" },
-    { color: "#ef4444", label: "Luminaire en panne" },
-    { color: "#dc2626", label: "Signalement actif" },
+    { color: "#f59e0b", label: "Luminaire LED", icon: Lightbulb },
+    { color: "#f97316", label: "Sodium (SHP)", icon: Lightbulb },
+    { color: "#eab308", label: "Projecteur", icon: Lightbulb },
+    { color: "#a78bfa", label: "Guirlande / festif", icon: Lightbulb },
+    { color: "#ef4444", label: "Luminaire en panne", icon: Lightbulb },
+    { color: "#0369a1", label: "Armoire / équipement réseau", icon: Zap },
+    { color: "#0369a1", label: "Câble réseau (le long des voies)", line: true },
+    { color: "#dc2626", label: "Signalement actif", icon: AlertTriangle },
   ];
 
   return (
@@ -168,7 +169,9 @@ function MapEclairage() {
           <p className="text-sm text-slate-500">
             {tousLuminaires.length} luminaires · {RESEAU_ELEC.length} équipements réseau ·{" "}
             {luminairesEnPanne} en panne ·{" "}
-            {addMode ? "cliquez sur la carte pour placer un luminaire" : "glisser, molette, clic pour les détails"}
+            {addMode
+              ? "cliquez sur la carte pour placer un luminaire"
+              : "glisser, molette, clic pour les détails"}
           </p>
         </div>
         <button
