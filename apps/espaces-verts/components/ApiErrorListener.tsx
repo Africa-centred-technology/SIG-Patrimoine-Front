@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useToast } from '@/contexts/ToastContext';
-import { API_FORBIDDEN_EVENT, ApiForbiddenEventDetail } from '@/services/api';
+import { useToast } from '@ev/contexts/ToastContext';
+import { API_FORBIDDEN_EVENT, ApiForbiddenEventDetail } from '@ev/services/api';
 
 /**
  * Messages d'erreur contextuels basés sur l'URL de l'API

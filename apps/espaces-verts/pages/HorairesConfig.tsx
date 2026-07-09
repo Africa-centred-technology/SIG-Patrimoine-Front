@@ -11,7 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { api } from '@/services/api';
+import { api } from '@ev/services/api';
 import { useToast } from '../contexts/ToastContext';
 import ConfirmDeleteModal from '../components/modals/ConfirmDeleteModal';
 

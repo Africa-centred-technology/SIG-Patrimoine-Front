@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Calendar, AlertCircle, Info, Settings, Lock } from 'lucide-react';
-import { DistributionChargeData, StatusDistribution } from '@/types/planning';
+import { DistributionChargeData, StatusDistribution } from '@ev/types/planning';
 import SelectDaysModal from '../modals/SelectDaysModal';
 
 interface DistributionChargeEditorProps {

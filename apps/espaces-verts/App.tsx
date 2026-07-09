@@ -485,6 +485,8 @@ const router = createBrowserRouter(
       <Route path="map" element={null} />
     </Route>,
   ),
+  // basename permet de monter l'app sous /espaces-verts dans la console SIG-Patrimoine
+  { basename: (import.meta as any).env?.VITE_EV_BASENAME ?? '/' },
 );
 
 // ─────────────────────────────────────────────────────────────────────────────

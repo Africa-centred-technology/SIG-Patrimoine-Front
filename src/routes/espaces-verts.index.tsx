@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { EspacesVertsHost } from "@/components/EspacesVertsHost";
 
-// Le produit Espaces Verts affiche l'application greensig-front embarquée
-// directement via EspacesVertsLayout (route parente). Rien à rendre ici.
+// /espaces-verts → monte l'application greensig-front (basename /espaces-verts,
+// sa route "/" correspond ici).
 export const Route = createFileRoute("/espaces-verts/")({
-  component: () => null,
+  component: EspacesVertsHost,
 });

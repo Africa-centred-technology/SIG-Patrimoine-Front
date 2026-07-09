@@ -1,41 +1,36 @@
-# Espaces Verts — application embarquée
+# Espaces Verts — module natif de SIG Patrimoine
 
-Ce dossier contient l'application **greensig-front complète** (le produit « Espaces Verts »),
-intégrée telle quelle dans la plateforme **SIG Patrimoine** (stratégie *embed*).
+Ce dossier contient l'application **greensig-front** (le produit « Espaces Verts »), intégrée
+**nativement** dans la plateforme **SIG Patrimoine** — **pas** en iframe, **pas** en app externe.
+C'est un module du **même build** que la console (et que Green Éclairage).
 
-La console SIG Patrimoine (racine `SIG-Patrimoine-Front/`, TanStack Start) l'affiche en
-**iframe plein cadre** depuis le produit « Espaces Verts » — voir
-`src/components/layouts/EspacesVertsLayout.tsx`. L'app apporte sa propre sidebar, son layout
-et son thème emerald.
+## Comment c'est branché
 
-## Lancer la démo en local (2 serveurs)
+- Le code vit ici, sous `apps/espaces-verts/`, avec l'alias d'import **`@ev/*`** (au lieu de
+  `@/*` qui, dans la console, désigne `src/`). Voir `vite.config.ts` et `tsconfig.json`.
+- Les routes `src/routes/espaces-verts.index.tsx` et `src/routes/espaces-verts.$.tsx` montent
+  l'app via `src/components/EspacesVertsHost.tsx`.
+- `EspacesVertsHost` importe **dynamiquement** `apps/espaces-verts/App` **côté client uniquement**
+  (l'app est client-only : `createBrowserRouter`, `window`, `localStorage`), ce qui évite tout
+  crash SSR de la console TanStack Start.
+- L'app tourne sous **basename `/espaces-verts`** (`VITE_EV_BASENAME`, voir `.env`). Son routeur
+  react-router gère en interne toutes ses sous-pages (`/espaces-verts/dashboard`, `/map`, …),
+  captées par la route splat `espaces-verts.$`.
+- L'app apporte son propre layout, sa sidebar et son thème emerald. Un bouton flottant
+  « Console » (`EspacesVertsLayout`) permet de revenir à la plateforme (fin d'impersonation).
+
+## Lancer / builder (un seul projet, un seul build)
 
 ```bash
-# 1) L'application Espaces Verts (ce dossier) — port 3000
-cd apps/espaces-verts
-npm install
-npm run dev            # http://localhost:3000
-
-# 2) La console SIG Patrimoine (racine du repo) — dans un autre terminal
-cd ../..
-bun install            # ou npm install
-bun run dev            # ouvre la console ; le produit Espaces Verts charge l'iframe :3000
+# À la racine SIG-Patrimoine-Front (PAS besoin d'un 2e serveur)
+bun install
+bun run dev       # console + Espaces Verts + Green Éclairage
+bun run build     # build unique de production
 ```
 
-La console lit l'URL de l'app via `VITE_EV_APP_URL` (défaut `http://localhost:3000`).
-Copier `.env.example` → `.env` à la racine pour la surcharger.
+## À vérifier au runtime
 
-## Contexte transmis à l'iframe
-
-La console passe en query string : `?embedded=1&theme=emerald&tenant=<id>&tenantNom=<nom>`.
-Ces paramètres sont disponibles pour un usage futur côté greensig-front (masquer son propre
-login en mode embarqué, filtrer par tenant, etc.).
-
-## Prod (déploiement unique, optionnel)
-
-Builder cette app avec une `base` dédiée (ex. `/ev-app/`), copier son `dist/` dans le
-`public/` de la console, puis pointer `VITE_EV_APP_URL=/ev-app/`.
-
-> Note : cette app appelle un backend `/api` (JWT). Sans backend, elle affiche son écran de
-> login / états de chargement. Le branchement de données mock (démo sans backend) est une
-> étape ultérieure.
+- **Styles Tailwind** : greensig utilisait Tailwind v3 (CDN) ; la console est en v4. Vérifier
+  que les classes de greensig sont bien générées (sinon ajuster le scan des sources Tailwind).
+- **Backend** : l'app appelle `/api` (JWT). Sans backend, elle montre son écran de login /
+  états de chargement. Brancher des données mock (démo sans backend) = étape suivante.
