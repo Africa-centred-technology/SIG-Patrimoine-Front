@@ -489,6 +489,12 @@ const router = createBrowserRouter(
   { basename: (import.meta as any).env?.VITE_EV_BASENAME ?? '/' },
 );
 
+// Vrai quand l'app est montée dans la console SIG Patrimoine (basename défini) :
+// active le mode démo sans backend (utilisateur fictif, pas d'appel /api au boot).
+const IS_EMBEDDED_DEMO =
+  Boolean((import.meta as any).env?.VITE_EV_BASENAME) &&
+  (import.meta as any).env?.VITE_EV_BASENAME !== '/';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // App — manages all application state, provides AppStateContext, renders router
 // ─────────────────────────────────────────────────────────────────────────────
@@ -547,6 +553,20 @@ function App() {
 
   useEffect(() => {
     const checkSession = async () => {
+      // Mode démo : app montée dans la console SIG Patrimoine (basename défini),
+      // sans backend. On injecte un utilisateur fictif pour afficher l'UI complète
+      // au lieu de l'écran de login qui échouerait sans /api.
+      if (IS_EMBEDDED_DEMO) {
+        setUser({
+          id: 'demo-admin',
+          name: 'Administrateur (démo)',
+          email: 'admin@sig-patrimoine.ma',
+          role: 'ADMIN',
+        });
+        setShowVideoLoading(false);
+        setIsRestoringSession(false);
+        return;
+      }
       const token = localStorage.getItem('token');
       if (token) {
         try {
