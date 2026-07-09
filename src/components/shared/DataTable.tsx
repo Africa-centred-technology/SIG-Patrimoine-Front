@@ -41,7 +41,9 @@ export function DataTable<T>({ columns, data, rowKey, onRowClick }: DataTablePro
               >
                 {columns.map((c) => (
                   <td key={c.key} className={`${alignClass(c.align)} px-4 py-3`}>
-                    {c.render ? c.render(row) : ((row as Record<string, unknown>)[c.key] as ReactNode)}
+                    {c.render
+                      ? c.render(row)
+                      : ((row as Record<string, unknown>)[c.key] as ReactNode)}
                   </td>
                 ))}
               </tr>

@@ -52,7 +52,10 @@ function ReportingPage() {
 
   return (
     <div className="space-y-6">
-      <ModuleHeader title="Rapports & performance énergétique" subtitle="Consommation, coûts, taux LED, économies et bilan carbone" />
+      <ModuleHeader
+        title="Rapports & performance énergétique"
+        subtitle="Consommation, coûts, taux LED, économies et bilan carbone"
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard

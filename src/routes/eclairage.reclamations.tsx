@@ -33,7 +33,11 @@ const TYPE_LABEL: Record<TypePanne, string> = {
   VANDALISME: "Vandalisme",
 };
 const urgColor = (u: number) =>
-  u >= 4 ? "bg-red-100 text-red-700" : u >= 3 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600";
+  u >= 4
+    ? "bg-red-100 text-red-700"
+    : u >= 3
+      ? "bg-orange-100 text-orange-700"
+      : "bg-slate-100 text-slate-600";
 const zoneNom = (id?: string) => ZONES.find((z) => z.id === id)?.nom ?? "—";
 
 function PannesPage() {
@@ -47,17 +51,50 @@ function PannesPage() {
     (p) =>
       (statut === "all" || p.statut === statut) &&
       (type === "all" || p.type === type) &&
-      (query === "" || p.reference.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)),
+      (query === "" ||
+        p.reference.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query)),
   );
   const count = (s: StatutPanne) => PANNES.filter((p) => p.statut === s).length;
 
   const columns: Column<Panne>[] = [
-    { key: "reference", label: "Référence", render: (p) => <span className="font-medium text-slate-800">{p.reference}</span> },
-    { key: "type", label: "Type", render: (p) => <span className="text-slate-600">{TYPE_LABEL[p.type]}</span> },
-    { key: "description", label: "Description", render: (p) => <span className="text-slate-500 text-xs block max-w-xs truncate">{p.description}</span> },
-    { key: "urgence", label: "Urgence", align: "center", render: (p) => <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${urgColor(p.urgence)}`}>{p.urgence}/5</span> },
-    { key: "date", label: "Date", render: (p) => <span className="text-slate-500 text-xs">{p.dateSignalement}</span> },
-    { key: "statut", label: "Statut", render: (p) => <StatusBadge label={STATUT_LABEL[p.statut]} tone={TONE[p.statut]} /> },
+    {
+      key: "reference",
+      label: "Référence",
+      render: (p) => <span className="font-medium text-slate-800">{p.reference}</span>,
+    },
+    {
+      key: "type",
+      label: "Type",
+      render: (p) => <span className="text-slate-600">{TYPE_LABEL[p.type]}</span>,
+    },
+    {
+      key: "description",
+      label: "Description",
+      render: (p) => (
+        <span className="text-slate-500 text-xs block max-w-xs truncate">{p.description}</span>
+      ),
+    },
+    {
+      key: "urgence",
+      label: "Urgence",
+      align: "center",
+      render: (p) => (
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${urgColor(p.urgence)}`}>
+          {p.urgence}/5
+        </span>
+      ),
+    },
+    {
+      key: "date",
+      label: "Date",
+      render: (p) => <span className="text-slate-500 text-xs">{p.dateSignalement}</span>,
+    },
+    {
+      key: "statut",
+      label: "Statut",
+      render: (p) => <StatusBadge label={STATUT_LABEL[p.statut]} tone={TONE[p.statut]} />,
+    },
     {
       key: "carte",
       label: "Carte",
@@ -65,7 +102,11 @@ function PannesPage() {
       render: (p) =>
         p.luminaireId ? (
           <span onClick={(e) => e.stopPropagation()}>
-            <Link to="/eclairage/map" search={{ focus: p.luminaireId }} className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium">
+            <Link
+              to="/eclairage/map"
+              search={{ focus: p.luminaireId }}
+              className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium"
+            >
               <MapPin size={14} /> Localiser
             </Link>
           </span>
@@ -75,23 +116,54 @@ function PannesPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader title="Signalements de panne" subtitle={`${filtered.length} signalements · cycle Nouveau → En cours → Résolu → Clôturé`} />
+      <ModuleHeader
+        title="Signalements de panne"
+        subtitle={`${filtered.length} signalements · cycle Nouveau → En cours → Résolu → Clôturé`}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard icon={Bell} label="Nouveaux" value={count("NOUVEAU")} color="bg-red-100 text-red-700" />
-        <StatCard icon={PlayCircle} label="En cours" value={count("EN_COURS")} color="bg-orange-100 text-orange-700" />
-        <StatCard icon={CheckCircle2} label="Résolus" value={count("RESOLU")} color="bg-green-100 text-green-700" />
-        <StatCard icon={AlertTriangle} label="Total" value={PANNES.length} color="bg-amber-100 text-amber-700" />
+        <StatCard
+          icon={Bell}
+          label="Nouveaux"
+          value={count("NOUVEAU")}
+          color="bg-red-100 text-red-700"
+        />
+        <StatCard
+          icon={PlayCircle}
+          label="En cours"
+          value={count("EN_COURS")}
+          color="bg-orange-100 text-orange-700"
+        />
+        <StatCard
+          icon={CheckCircle2}
+          label="Résolus"
+          value={count("RESOLU")}
+          color="bg-green-100 text-green-700"
+        />
+        <StatCard
+          icon={AlertTriangle}
+          label="Total"
+          value={PANNES.length}
+          color="bg-amber-100 text-amber-700"
+        />
       </div>
 
       <FilterBar search={q} onSearch={setQ}>
         <FilterSelect value={statut} onChange={(v) => setStatut(v as any)}>
           <option value="all">Tous statuts</option>
-          {Object.entries(STATUT_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          {Object.entries(STATUT_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
         </FilterSelect>
         <FilterSelect value={type} onChange={(v) => setType(v as any)}>
           <option value="all">Tous types</option>
-          {Object.entries(TYPE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          {Object.entries(TYPE_LABEL).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v}
+            </option>
+          ))}
         </FilterSelect>
       </FilterBar>
 
@@ -110,7 +182,11 @@ function PannesPage() {
             <div className="text-slate-800">{sel.description}</div>
           </div>
           {sel.luminaireId && (
-            <Link to="/eclairage/map" search={{ focus: sel.luminaireId }} className="mt-3 inline-flex items-center gap-1.5 text-sm text-white bg-amber-500 hover:bg-amber-600 rounded-lg px-3 py-2 font-medium">
+            <Link
+              to="/eclairage/map"
+              search={{ focus: sel.luminaireId }}
+              className="mt-3 inline-flex items-center gap-1.5 text-sm text-white bg-amber-500 hover:bg-amber-600 rounded-lg px-3 py-2 font-medium"
+            >
               <MapPin size={15} /> Localiser sur la carte
             </Link>
           )}

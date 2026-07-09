@@ -1,6 +1,12 @@
 import React, { FC, useMemo, useCallback, useState, useRef } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer, View } from 'react-big-calendar';
-import withDragAndDrop, { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
+import withDragAndDropDefault, {
+  EventInteractionArgs,
+} from 'react-big-calendar/lib/addons/dragAndDrop';
+// Interop CommonJS/ESM : selon le bundler (Vite de la console vs Vite autonome),
+// le default peut être encapsulé dans `.default`. On résout la fonction dans les deux cas.
+const withDragAndDrop = ((withDragAndDropDefault as any)?.default ??
+  withDragAndDropDefault) as typeof withDragAndDropDefault;
 import { format, parse, startOfWeek, getDay, isSameDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Clock, Calendar as CalendarIcon, CheckCircle2, X, ChevronRight } from 'lucide-react';

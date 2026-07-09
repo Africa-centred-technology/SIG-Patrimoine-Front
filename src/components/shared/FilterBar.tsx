@@ -9,7 +9,12 @@ interface FilterBarProps {
 }
 
 // Barre de filtres standard : recherche + selects (children).
-export function FilterBar({ search, onSearch, placeholder = "Rechercher…", children }: FilterBarProps) {
+export function FilterBar({
+  search,
+  onSearch,
+  placeholder = "Rechercher…",
+  children,
+}: FilterBarProps) {
   return (
     <div className="flex flex-wrap gap-2">
       <div className="relative">

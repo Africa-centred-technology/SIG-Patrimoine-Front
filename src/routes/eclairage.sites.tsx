@@ -18,7 +18,10 @@ function ZonesPage() {
 
   return (
     <div className="space-y-5">
-      <ModuleHeader title="Zones / Secteurs d'éclairage" subtitle={`${ZONES.length} secteurs · ${totalLum} luminaires gérés`} />
+      <ModuleHeader
+        title="Zones / Secteurs d'éclairage"
+        subtitle={`${ZONES.length} secteurs · ${totalLum} luminaires gérés`}
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
