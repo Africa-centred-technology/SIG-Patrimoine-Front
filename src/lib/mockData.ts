@@ -341,61 +341,89 @@ export interface Rue {
   path: LatLng[];
 }
 
+// Tracés RÉELS issus d'OpenStreetMap (Benguérir / UM6P) : les luminaires bordent
+// ces voies, donc ils tombent sur les vraies routes visibles sur les tuiles.
 export const RUES: Rue[] = [
   {
     id: "r1",
-    nom: "Avenue centrale",
+    nom: "Axe central Est-Ouest",
     zoneId: "z1",
-    n: 12,
+    n: 9,
     path: [
-      { lat: 32.216, lng: -7.943 },
-      { lat: 32.2162, lng: -7.94 },
-      { lat: 32.2161, lng: -7.937 },
-      { lat: 32.216, lng: -7.934 },
-      { lat: 32.2159, lng: -7.931 },
+      { lat: 32.211237, lng: -7.940828 },
+      { lat: 32.212816, lng: -7.938765 },
+      { lat: 32.213474, lng: -7.937887 },
+      { lat: 32.216381, lng: -7.933984 },
+      { lat: 32.2199, lng: -7.929774 },
+      { lat: 32.22121, lng: -7.929223 },
+      { lat: 32.224226, lng: -7.928193 },
     ],
   },
   {
     id: "r2",
-    nom: "Rocade Nord (zone industrielle)",
-    zoneId: "z2",
-    n: 10,
+    nom: "Axe Sud",
+    zoneId: "z4",
+    n: 9,
     path: [
-      { lat: 32.22, lng: -7.933 },
-      { lat: 32.2215, lng: -7.9315 },
-      { lat: 32.223, lng: -7.93 },
-      { lat: 32.2245, lng: -7.9285 },
+      { lat: 32.213523, lng: -7.937919 },
+      { lat: 32.210859, lng: -7.937251 },
+      { lat: 32.208667, lng: -7.937972 },
+      { lat: 32.205887, lng: -7.935814 },
+      { lat: 32.20185, lng: -7.935817 },
+      { lat: 32.199613, lng: -7.935803 },
+      { lat: 32.198466, lng: -7.935061 },
     ],
   },
   {
     id: "r3",
-    nom: "Avenue Mohammed VI",
-    zoneId: "z3",
-    n: 10,
+    nom: "Rocade Nord",
+    zoneId: "z2",
+    n: 8,
     path: [
-      { lat: 32.213, lng: -7.944 },
-      { lat: 32.2115, lng: -7.9445 },
-      { lat: 32.21, lng: -7.945 },
-      { lat: 32.2085, lng: -7.9455 },
+      { lat: 32.224237, lng: -7.928262 },
+      { lat: 32.220615, lng: -7.929479 },
+      { lat: 32.220134, lng: -7.92963 },
+      { lat: 32.21808, lng: -7.931906 },
+      { lat: 32.217084, lng: -7.933095 },
+      { lat: 32.215271, lng: -7.935575 },
+      { lat: 32.213523, lng: -7.937919 },
     ],
   },
   {
     id: "r4",
-    nom: "Rue résidentielle Sud",
+    nom: "Voie résidentielle Sud-Est",
     zoneId: "z4",
     n: 8,
     path: [
-      { lat: 32.211, lng: -7.9325 },
-      { lat: 32.2095, lng: -7.9312 },
-      { lat: 32.208, lng: -7.93 },
-      { lat: 32.2065, lng: -7.9288 },
+      { lat: 32.212154, lng: -7.937084 },
+      { lat: 32.212192, lng: -7.932724 },
+      { lat: 32.211552, lng: -7.930431 },
+      { lat: 32.210911, lng: -7.928407 },
+      { lat: 32.209898, lng: -7.926645 },
+      { lat: 32.210426, lng: -7.926071 },
+      { lat: 32.211846, lng: -7.925148 },
+    ],
+  },
+  {
+    id: "r5",
+    nom: "Bretelle Nord-Est",
+    zoneId: "z1",
+    n: 6,
+    path: [
+      { lat: 32.216928, lng: -7.931652 },
+      { lat: 32.217777, lng: -7.932719 },
+      { lat: 32.218726, lng: -7.933902 },
+      { lat: 32.219528, lng: -7.934885 },
+      { lat: 32.221022, lng: -7.936729 },
+      { lat: 32.222088, lng: -7.938052 },
+      { lat: 32.22259, lng: -7.938686 },
     ],
   },
 ];
 
 // Échantillonne `n` points régulièrement espacés le long d'une polyligne,
 // avec un léger décalage perpendiculaire alterné (bord de voie).
-function pointsAlong(path: LatLng[], n: number, side = 0.00009): LatLng[] {
+function pointsAlong(path: LatLng[], n: number, side = 0.00004): LatLng[] {
   const seg: number[] = [];
   let total = 0;
   for (let i = 1; i < path.length; i++) {
@@ -454,85 +482,20 @@ function buildLuminaires(): Luminaire[] {
 
 export const LUMINAIRES: Luminaire[] = buildLuminaires();
 
+// Équipements réseau posés sur des sommets des voies réelles (RUES).
+const onRue = (r: number, p: number) => ({ ...RUES[r].path[p] });
+
 export const RESEAU_ELEC: EquipementElectrique[] = [
-  {
-    id: "e1",
-    reference: "ARM-001",
-    type: "ARMOIRE",
-    etat: "EN_SERVICE",
-    puissance_kva: 40,
-    nb_departs: 6,
-    coordinates: { lat: jitter(CENTER.lat), lng: jitter(CENTER.lng) },
-  },
-  {
-    id: "e2",
-    reference: "ARM-002",
-    type: "ARMOIRE",
-    etat: "EN_SERVICE",
-    puissance_kva: 25,
-    nb_departs: 4,
-    coordinates: { lat: 32.223, lng: -7.93 },
-  },
-  {
-    id: "e3",
-    reference: "ARM-003",
-    type: "ARMOIRE",
-    etat: "MAINTENANCE",
-    puissance_kva: 30,
-    nb_departs: 5,
-    coordinates: { lat: 32.21, lng: -7.945 },
-  },
-  {
-    id: "e4",
-    reference: "TRF-001",
-    type: "TRANSFORMATEUR",
-    etat: "EN_SERVICE",
-    puissance_kva: 160,
-    coordinates: { lat: 32.22, lng: -7.94 },
-  },
-  {
-    id: "e5",
-    reference: "TRF-002",
-    type: "TRANSFORMATEUR",
-    etat: "EN_SERVICE",
-    puissance_kva: 100,
-    coordinates: { lat: 32.213, lng: -7.933 },
-  },
-  {
-    id: "e6",
-    reference: "CFT-001",
-    type: "COFFRET",
-    etat: "EN_SERVICE",
-    coordinates: { lat: 32.217, lng: -7.939 },
-  },
-  {
-    id: "e7",
-    reference: "CFT-002",
-    type: "COFFRET",
-    etat: "HORS_SERVICE",
-    coordinates: { lat: 32.208, lng: -7.93 },
-  },
-  {
-    id: "e8",
-    reference: "CPT-001",
-    type: "COMPTEUR",
-    etat: "EN_SERVICE",
-    coordinates: { lat: 32.219, lng: -7.936 },
-  },
-  {
-    id: "e9",
-    reference: "CEL-001",
-    type: "CELLULE_PHOTO",
-    etat: "EN_SERVICE",
-    coordinates: { lat: 32.214, lng: -7.938 },
-  },
-  {
-    id: "e10",
-    reference: "CEL-002",
-    type: "CELLULE_PHOTO",
-    etat: "EN_SERVICE",
-    coordinates: { lat: 32.211, lng: -7.942 },
-  },
+  { id: "e1", reference: "ARM-001", type: "ARMOIRE", etat: "EN_SERVICE", puissance_kva: 40, nb_departs: 6, coordinates: onRue(0, 1) },
+  { id: "e2", reference: "ARM-002", type: "ARMOIRE", etat: "EN_SERVICE", puissance_kva: 25, nb_departs: 4, coordinates: onRue(2, 0) },
+  { id: "e3", reference: "ARM-003", type: "ARMOIRE", etat: "MAINTENANCE", puissance_kva: 30, nb_departs: 5, coordinates: onRue(1, 2) },
+  { id: "e4", reference: "TRF-001", type: "TRANSFORMATEUR", etat: "EN_SERVICE", puissance_kva: 160, coordinates: onRue(0, 3) },
+  { id: "e5", reference: "TRF-002", type: "TRANSFORMATEUR", etat: "EN_SERVICE", puissance_kva: 100, coordinates: onRue(2, 3) },
+  { id: "e6", reference: "CFT-001", type: "COFFRET", etat: "EN_SERVICE", coordinates: onRue(0, 5) },
+  { id: "e7", reference: "CFT-002", type: "COFFRET", etat: "HORS_SERVICE", coordinates: onRue(3, 3) },
+  { id: "e8", reference: "CPT-001", type: "COMPTEUR", etat: "EN_SERVICE", coordinates: onRue(4, 2) },
+  { id: "e9", reference: "CEL-001", type: "CELLULE_PHOTO", etat: "EN_SERVICE", coordinates: onRue(1, 1) },
+  { id: "e10", reference: "CEL-002", type: "CELLULE_PHOTO", etat: "EN_SERVICE", coordinates: onRue(3, 5) },
 ];
 
 function buildPannes(): Panne[] {

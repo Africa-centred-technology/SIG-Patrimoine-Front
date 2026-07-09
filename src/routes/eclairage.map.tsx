@@ -190,7 +190,7 @@ function MapEclairage() {
         groups={groups}
         lines={lignes}
         center={CENTER}
-        zoom={15}
+        zoom={14}
         legend={legend}
         focusId={focus}
         addMode={addMode}
