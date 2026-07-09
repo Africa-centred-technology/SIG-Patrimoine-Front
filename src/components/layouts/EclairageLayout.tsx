@@ -15,7 +15,8 @@ import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
 import { ImpersonationBanner } from "@/components/shared/ImpersonationBanner";
 import { EclairageMap } from "@/components/eclairage/EclairageMap";
-import { EclairageTopBar } from "@/components/eclairage/EclairageTopBar";
+import { EclairageTopBar, TopBarActions } from "@/components/eclairage/EclairageTopBar";
+import { EclairageMapSearch } from "@/components/eclairage/EclairageMapSearch";
 import { THEMES } from "@/lib/theme";
 import { useApp, useTenant } from "@/contexts/AppContext";
 
@@ -62,11 +63,13 @@ export function EclairageLayout() {
         </div>
 
         {isMapView ? (
-          /* Vue carte : la barre du haut flotte au-dessus de la carte */
-          <div className="absolute top-3 left-3 right-3 z-30 pointer-events-auto rounded-xl overflow-hidden shadow-lg border border-slate-200">
-            <ImpersonationBanner />
-            <EclairageTopBar />
-          </div>
+          /* Vue carte : recherche compacte flottante (gauche) + actions (droite) */
+          <>
+            <EclairageMapSearch />
+            <div className="absolute top-4 right-4 z-30 pointer-events-auto bg-white/90 backdrop-blur-md shadow-xl rounded-xl border border-white/20 ring-1 ring-black/5 px-3 py-1.5">
+              <TopBarActions />
+            </div>
+          </>
         ) : (
           /* Vue module : panneau flottant avec la barre du haut en tête */
           <div className="absolute inset-0 md:inset-4 z-20 flex flex-col bg-white/95 backdrop-blur-xl md:rounded-2xl md:border md:border-white/20 shadow-2xl overflow-hidden">
