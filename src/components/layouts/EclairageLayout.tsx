@@ -1,5 +1,16 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Map, Lightbulb, Layers, Calendar, AlertTriangle, Wrench, Users, FileBarChart2, Settings } from "lucide-react";
+import {
+  LayoutDashboard,
+  Map,
+  Lightbulb,
+  Layers,
+  Calendar,
+  AlertTriangle,
+  Wrench,
+  Users,
+  FileBarChart2,
+  Settings,
+} from "lucide-react";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
 import { TopBar } from "@/components/shared/TopBar";

@@ -1,16 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, X, Crosshair } from "lucide-react";
 
 export interface MapMarker {
+  id?: string;
   lat: number;
   lng: number;
   color: string;
   size?: number;
   title?: string;
+  subtitle?: string;
+  details?: { label: string; value: string }[];
+}
+
+export interface MarkerGroup {
+  key: string;
+  label: string;
+  color: string;
+  markers: MapMarker[];
 }
 
 interface TileMapProps {
-  markers: MapMarker[];
+  groups?: MarkerGroup[];
+  markers?: MapMarker[];
   center?: { lat: number; lng: number };
   zoom?: number;
   legend?: Array<{ color: string; label: string }>;
@@ -42,6 +53,8 @@ const LAYERS: Record<
 };
 
 const TILE = 256;
+const MIN_Z = 10;
+const MAX_Z = 18;
 
 function project(lat: number, lng: number, z: number) {
   const scale = TILE * Math.pow(2, z);
@@ -51,12 +64,18 @@ function project(lat: number, lng: number, z: number) {
   return { x, y };
 }
 
-const MIN_Z = 10;
-const MAX_Z = 18;
+function unproject(x: number, y: number, z: number) {
+  const scale = TILE * Math.pow(2, z);
+  const lng = (x / scale) * 360 - 180;
+  const n = Math.PI - (2 * Math.PI * y) / scale;
+  const lat = (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+  return { lat, lng };
+}
 
 export function TileMap({
+  groups,
   markers,
-  center = { lat: 32.216, lng: -7.937 },
+  center: centerProp = { lat: 32.216, lng: -7.937 },
   zoom = 15,
   legend,
   height = "h-[calc(100vh-13rem)]",
@@ -64,8 +83,19 @@ export function TileMap({
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [z, setZ] = useState(zoom);
+  const [center, setCenter] = useState(centerProp);
   const [layer, setLayer] = useState<LayerKey>("plan");
+  const [selected, setSelected] = useState<MapMarker | null>(null);
 
+  // Calques (groupes) : tous visibles par défaut
+  const allGroups: MarkerGroup[] =
+    groups ?? (markers ? [{ key: "all", label: "Objets", color: "#64748b", markers }] : []);
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const visibleMarkers = allGroups
+    .filter((g) => !hidden.has(g.key))
+    .flatMap((g) => g.markers);
+
+  // Mesure du conteneur
   useEffect(() => {
     if (!ref.current) return;
     const el = ref.current;
@@ -76,10 +106,41 @@ export function TileMap({
     return () => ro.disconnect();
   }, []);
 
+  // Zoom molette (listener natif non-passif pour empêcher le scroll de page)
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      setZ((v) => Math.max(MIN_Z, Math.min(MAX_Z, v + (e.deltaY < 0 ? 1 : -1))));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   const { w, h } = size;
   const wc = project(center.lat, center.lng, z);
   const originX = wc.x - w / 2;
   const originY = wc.y - h / 2;
+
+  // Glisser pour déplacer (pan)
+  const drag = useRef<{ x: number; y: number; center: { lat: number; lng: number }; moved: boolean } | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    drag.current = { x: e.clientX, y: e.clientY, center, moved: false };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = e.clientX - d.x;
+    const dy = e.clientY - d.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+    const cw = project(d.center.lat, d.center.lng, z);
+    setCenter(unproject(cw.x - dx, cw.y - dy, z));
+  };
+  const onPointerUp = () => {
+    drag.current = null;
+  };
 
   // Tuiles couvrant le viewport
   const tiles: { key: string; url: string; left: number; top: number }[] = [];
@@ -103,10 +164,20 @@ export function TileMap({
     }
   }
 
+  const toggleGroup = (k: string) =>
+    setHidden((prev) => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+
   return (
     <div
       ref={ref}
-      className={`relative w-full ${height} rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-200`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      className={`relative w-full ${height} rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-200 touch-none cursor-grab active:cursor-grabbing`}
     >
       {/* Tuiles */}
       {tiles.map((t) => (
@@ -117,6 +188,7 @@ export function TileMap({
           width={TILE}
           height={TILE}
           loading="lazy"
+          draggable={false}
           className="absolute select-none pointer-events-none max-w-none"
           style={{ left: t.left, top: t.top }}
         />
@@ -124,26 +196,57 @@ export function TileMap({
 
       {/* Marqueurs */}
       {w > 0 &&
-        markers.map((m, i) => {
+        visibleMarkers.map((m, i) => {
           const p = project(m.lat, m.lng, z);
           const left = p.x - originX;
           const top = p.y - originY;
           if (left < -20 || left > w + 20 || top < -20 || top > h + 20) return null;
           const s = m.size ?? 10;
+          const isSel = selected && selected === m;
           return (
-            <div
-              key={i}
+            <button
+              key={m.id ?? i}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (drag.current?.moved) return;
+                setSelected(m);
+              }}
               className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left, top }}
               title={m.title}
             >
-              <div
-                className="rounded-full ring-2 ring-white shadow-md hover:scale-125 transition-transform cursor-pointer"
-                style={{ width: s, height: s, backgroundColor: m.color }}
+              <span
+                className={`block rounded-full ring-2 shadow-md hover:scale-125 transition-transform ${isSel ? "ring-slate-900" : "ring-white"}`}
+                style={{
+                  width: isSel ? s + 6 : s,
+                  height: isSel ? s + 6 : s,
+                  backgroundColor: m.color,
+                }}
               />
-            </div>
+            </button>
           );
         })}
+
+      {/* Calques (groupes) */}
+      {allGroups.length > 1 && (
+        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur rounded-lg p-2 shadow-lg border border-slate-200 space-y-1">
+          <div className="text-[11px] font-semibold text-slate-500 px-1">Calques</div>
+          {allGroups.map((g) => {
+            const on = !hidden.has(g.key);
+            return (
+              <button
+                key={g.key}
+                onClick={() => toggleGroup(g.key)}
+                className={`flex items-center gap-2 w-full text-left text-xs rounded-md px-2 py-1 transition ${on ? "hover:bg-slate-100" : "opacity-40 hover:opacity-70"}`}
+              >
+                <span className="h-3 w-3 rounded-full ring-1 ring-white shrink-0" style={{ backgroundColor: g.color }} />
+                <span className="text-slate-700">{g.label}</span>
+                <span className="ml-auto text-slate-400">{g.markers.length}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Sélecteur de fond */}
       <div className="absolute top-3 right-3 flex gap-1 bg-white/90 backdrop-blur rounded-lg p-1 shadow-lg border border-slate-200">
@@ -160,24 +263,53 @@ export function TileMap({
         ))}
       </div>
 
-      {/* Zoom */}
+      {/* Zoom + recentrer */}
       <div className="absolute top-16 right-3 flex flex-col bg-white/90 backdrop-blur rounded-lg shadow-lg border border-slate-200 overflow-hidden">
-        <button
-          onClick={() => setZ((v) => Math.min(MAX_Z, v + 1))}
-          className="p-1.5 hover:bg-slate-100 text-slate-700"
-          title="Zoomer"
-        >
+        <button onClick={() => setZ((v) => Math.min(MAX_Z, v + 1))} className="p-1.5 hover:bg-slate-100 text-slate-700" title="Zoomer">
           <Plus size={16} />
         </button>
         <div className="h-px bg-slate-200" />
-        <button
-          onClick={() => setZ((v) => Math.max(MIN_Z, v - 1))}
-          className="p-1.5 hover:bg-slate-100 text-slate-700"
-          title="Dézoomer"
-        >
+        <button onClick={() => setZ((v) => Math.max(MIN_Z, v - 1))} className="p-1.5 hover:bg-slate-100 text-slate-700" title="Dézoomer">
           <Minus size={16} />
         </button>
+        <div className="h-px bg-slate-200" />
+        <button
+          onClick={() => {
+            setCenter(centerProp);
+            setZ(zoom);
+          }}
+          className="p-1.5 hover:bg-slate-100 text-slate-700"
+          title="Recentrer"
+        >
+          <Crosshair size={16} />
+        </button>
       </div>
+
+      {/* Panneau de détails (objet sélectionné) */}
+      {selected && (
+        <div className="absolute bottom-3 right-3 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+          <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ borderTopColor: selected.color }}>
+            <span className="h-3 w-3 rounded-full ring-1 ring-white" style={{ backgroundColor: selected.color }} />
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-slate-900 truncate">{selected.title ?? "Objet"}</div>
+              {selected.subtitle && <div className="text-[11px] text-slate-500 truncate">{selected.subtitle}</div>}
+            </div>
+            <button onClick={() => setSelected(null)} className="ml-auto text-slate-400 hover:text-slate-700">
+              <X size={15} />
+            </button>
+          </div>
+          {selected.details && selected.details.length > 0 && (
+            <div className="p-3 space-y-1.5">
+              {selected.details.map((d, i) => (
+                <div key={i} className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">{d.label}</span>
+                  <span className="text-slate-800 font-medium text-right">{d.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Légende */}
       {legend && legend.length > 0 && (
@@ -193,7 +325,7 @@ export function TileMap({
       )}
 
       {/* Attribution */}
-      <div className="absolute bottom-1 right-2 text-[10px] text-slate-600 bg-white/70 px-1.5 py-0.5 rounded">
+      <div className="absolute bottom-1 right-2 text-[10px] text-slate-600 bg-white/70 px-1.5 py-0.5 rounded pointer-events-none">
         {LAYERS[layer].attribution}
       </div>
     </div>
