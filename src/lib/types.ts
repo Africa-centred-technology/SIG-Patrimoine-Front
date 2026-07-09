@@ -70,7 +70,13 @@ export interface Luminaire {
   coordinates: { lat: number; lng: number };
 }
 
-export type TypeEquipElec = "ARMOIRE" | "LIGNE" | "COFFRET" | "TRANSFORMATEUR" | "COMPTEUR" | "CELLULE_PHOTO";
+export type TypeEquipElec =
+  | "ARMOIRE"
+  | "LIGNE"
+  | "COFFRET"
+  | "TRANSFORMATEUR"
+  | "COMPTEUR"
+  | "CELLULE_PHOTO";
 
 export interface EquipementElectrique {
   id: string;

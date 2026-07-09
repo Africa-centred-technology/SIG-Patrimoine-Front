@@ -33,7 +33,6 @@ import { Route as EclairageParametresRouteImport } from './routes/eclairage.para
 import { Route as EclairageMapRouteImport } from './routes/eclairage.map'
 import { Route as EclairageInventoryRouteImport } from './routes/eclairage.inventory'
 import { Route as EclairageInterventionsRouteImport } from './routes/eclairage.interventions'
-import { Route as EclairageEnergieRouteImport } from './routes/eclairage.energie'
 import { Route as EclairageDashboardRouteImport } from './routes/eclairage.dashboard'
 import { Route as PlatformTenantsIndexRouteImport } from './routes/platform.tenants.index'
 import { Route as PlatformTenantsIdRouteImport } from './routes/platform.tenants.$id'
@@ -158,11 +157,6 @@ const EclairageInterventionsRoute = EclairageInterventionsRouteImport.update({
   path: '/interventions',
   getParentRoute: () => EclairageRoute,
 } as any)
-const EclairageEnergieRoute = EclairageEnergieRouteImport.update({
-  id: '/energie',
-  path: '/energie',
-  getParentRoute: () => EclairageRoute,
-} as any)
 const EclairageDashboardRoute = EclairageDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -186,7 +180,6 @@ export interface FileRoutesByFullPath {
   '/platform': typeof PlatformRouteWithChildren
   '/select-product': typeof SelectProductRoute
   '/eclairage/dashboard': typeof EclairageDashboardRoute
-  '/eclairage/energie': typeof EclairageEnergieRoute
   '/eclairage/interventions': typeof EclairageInterventionsRoute
   '/eclairage/inventory': typeof EclairageInventoryRoute
   '/eclairage/map': typeof EclairageMapRoute
@@ -213,7 +206,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/select-product': typeof SelectProductRoute
   '/eclairage/dashboard': typeof EclairageDashboardRoute
-  '/eclairage/energie': typeof EclairageEnergieRoute
   '/eclairage/interventions': typeof EclairageInterventionsRoute
   '/eclairage/inventory': typeof EclairageInventoryRoute
   '/eclairage/map': typeof EclairageMapRoute
@@ -243,7 +235,6 @@ export interface FileRoutesById {
   '/platform': typeof PlatformRouteWithChildren
   '/select-product': typeof SelectProductRoute
   '/eclairage/dashboard': typeof EclairageDashboardRoute
-  '/eclairage/energie': typeof EclairageEnergieRoute
   '/eclairage/interventions': typeof EclairageInterventionsRoute
   '/eclairage/inventory': typeof EclairageInventoryRoute
   '/eclairage/map': typeof EclairageMapRoute
@@ -275,7 +266,6 @@ export interface FileRouteTypes {
     | '/platform'
     | '/select-product'
     | '/eclairage/dashboard'
-    | '/eclairage/energie'
     | '/eclairage/interventions'
     | '/eclairage/inventory'
     | '/eclairage/map'
@@ -302,7 +292,6 @@ export interface FileRouteTypes {
     | '/'
     | '/select-product'
     | '/eclairage/dashboard'
-    | '/eclairage/energie'
     | '/eclairage/interventions'
     | '/eclairage/inventory'
     | '/eclairage/map'
@@ -331,7 +320,6 @@ export interface FileRouteTypes {
     | '/platform'
     | '/select-product'
     | '/eclairage/dashboard'
-    | '/eclairage/energie'
     | '/eclairage/interventions'
     | '/eclairage/inventory'
     | '/eclairage/map'
@@ -533,13 +521,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EclairageInterventionsRouteImport
       parentRoute: typeof EclairageRoute
     }
-    '/eclairage/energie': {
-      id: '/eclairage/energie'
-      path: '/energie'
-      fullPath: '/eclairage/energie'
-      preLoaderRoute: typeof EclairageEnergieRouteImport
-      parentRoute: typeof EclairageRoute
-    }
     '/eclairage/dashboard': {
       id: '/eclairage/dashboard'
       path: '/dashboard'
@@ -566,7 +547,6 @@ declare module '@tanstack/react-router' {
 
 interface EclairageRouteChildren {
   EclairageDashboardRoute: typeof EclairageDashboardRoute
-  EclairageEnergieRoute: typeof EclairageEnergieRoute
   EclairageInterventionsRoute: typeof EclairageInterventionsRoute
   EclairageInventoryRoute: typeof EclairageInventoryRoute
   EclairageMapRoute: typeof EclairageMapRoute
@@ -581,7 +561,6 @@ interface EclairageRouteChildren {
 
 const EclairageRouteChildren: EclairageRouteChildren = {
   EclairageDashboardRoute: EclairageDashboardRoute,
-  EclairageEnergieRoute: EclairageEnergieRoute,
   EclairageInterventionsRoute: EclairageInterventionsRoute,
   EclairageInventoryRoute: EclairageInventoryRoute,
   EclairageMapRoute: EclairageMapRoute,

@@ -17,8 +17,18 @@ interface AppState {
   impersonate: (tenantId: string, product: ProduitCle) => void;
   stopImpersonation: () => void;
   setActiveProduct: (p: ProduitCle) => void;
-  createTenant: (data: Omit<Tenant, "id" | "dateCreation" | "nbUtilisateurs" | "nbSites">, produits: ProduitCle[], plan: PlanLicence) => Tenant;
-  attribuerLicence: (tenantId: string, produit: ProduitCle, plan: PlanLicence, seats: number, dureeM: number) => void;
+  createTenant: (
+    data: Omit<Tenant, "id" | "dateCreation" | "nbUtilisateurs" | "nbSites">,
+    produits: ProduitCle[],
+    plan: PlanLicence,
+  ) => Tenant;
+  attribuerLicence: (
+    tenantId: string,
+    produit: ProduitCle,
+    plan: PlanLicence,
+    seats: number,
+    dureeM: number,
+  ) => void;
   suspendreLicence: (id: string) => void;
   reactiverLicence: (id: string) => void;
   revoquerLicence: (id: string) => void;
@@ -70,10 +80,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(
         "sig-patrimoine-state",
-        JSON.stringify({ role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences, produits }),
+        JSON.stringify({
+          role,
+          currentTenantId,
+          impersonatedTenantId,
+          activeProduct,
+          tenants,
+          licences,
+          produits,
+        }),
       );
     } catch {}
-  }, [hydrated, role, currentTenantId, impersonatedTenantId, activeProduct, tenants, licences, produits]);
+  }, [
+    hydrated,
+    role,
+    currentTenantId,
+    impersonatedTenantId,
+    activeProduct,
+    tenants,
+    licences,
+    produits,
+  ]);
 
   const loginAsSuperAdmin = useCallback(() => {
     setRole("SUPERADMIN");
@@ -129,7 +156,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       seats: meta.seats,
       seatsUtilises: 0,
       dateDebut: new Date().toISOString().slice(0, 10),
-      dateFin: new Date(Date.now() + (plan === "STARTER" ? 30 : 365) * 86400000).toISOString().slice(0, 10),
+      dateFin: new Date(Date.now() + (plan === "STARTER" ? 30 : 365) * 86400000)
+        .toISOString()
+        .slice(0, 10),
       prixMensuelMAD: meta.prix,
       renouvellementAuto: plan !== "STARTER",
     }));
@@ -137,7 +166,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return t;
   };
 
-  const attribuerLicence: AppState["attribuerLicence"] = (tenantId, produit, plan, seats, dureeM) => {
+  const attribuerLicence: AppState["attribuerLicence"] = (
+    tenantId,
+    produit,
+    plan,
+    seats,
+    dureeM,
+  ) => {
     const meta = PLAN_PRIX[plan];
     const lic: Licence = {
       id: `l-${Date.now()}`,
@@ -163,18 +198,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const suspendreLicence = (id: string) =>
-    setLicences((prev) => prev.map((l) => (l.id === id ? { ...l, statut: "SUSPENDUE" as const } : l)));
+    setLicences((prev) =>
+      prev.map((l) => (l.id === id ? { ...l, statut: "SUSPENDUE" as const } : l)),
+    );
   const reactiverLicence = (id: string) =>
     setLicences((prev) => prev.map((l) => (l.id === id ? { ...l, statut: "ACTIVE" as const } : l)));
   const revoquerLicence = (id: string) => {
     const lic = licences.find((l) => l.id === id);
     setLicences((prev) => prev.filter((l) => l.id !== id));
     if (lic) {
-      setTenants((prev) => prev.map((t) => (t.id === lic.tenantId ? { ...t, produits: t.produits.filter((p) => p !== lic.produit) } : t)));
+      setTenants((prev) =>
+        prev.map((t) =>
+          t.id === lic.tenantId
+            ? { ...t, produits: t.produits.filter((p) => p !== lic.produit) }
+            : t,
+        ),
+      );
     }
   };
   const changerPlan = (id: string, plan: PlanLicence) =>
-    setLicences((prev) => prev.map((l) => (l.id === id ? { ...l, plan, prixMensuelMAD: PLAN_PRIX[plan].prix, seats: PLAN_PRIX[plan].seats } : l)));
+    setLicences((prev) =>
+      prev.map((l) =>
+        l.id === id
+          ? { ...l, plan, prixMensuelMAD: PLAN_PRIX[plan].prix, seats: PLAN_PRIX[plan].seats }
+          : l,
+      ),
+    );
 
   // ── CRUD produits paramétrables ──────────────────────────────────────────
   const upsertProduit: AppState["upsertProduit"] = (p) =>

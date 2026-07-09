@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Map, Lightbulb, Layers, Calendar, AlertTriangle, Wrench, Zap, Users, FileBarChart2, Settings } from "lucide-react";
+import { LayoutDashboard, Map, Lightbulb, Layers, Calendar, AlertTriangle, Wrench, Users, FileBarChart2, Settings } from "lucide-react";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/shared/Sidebar";
 import { TopBar } from "@/components/shared/TopBar";
@@ -15,7 +15,6 @@ const items = [
   { to: "/eclairage/planning", label: "Planification", icon: Calendar },
   { to: "/eclairage/reclamations", label: "Signalements", icon: AlertTriangle },
   { to: "/eclairage/interventions", label: "Interventions", icon: Wrench },
-  { to: "/eclairage/energie", label: "Énergie & Perf.", icon: Zap },
   { to: "/eclairage/teams", label: "Techniciens", icon: Users },
   { to: "/eclairage/reporting", label: "Rapports", icon: FileBarChart2 },
   { to: "/eclairage/parametres", label: "Paramètres", icon: Settings },

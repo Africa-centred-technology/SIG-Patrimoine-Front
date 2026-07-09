@@ -111,7 +111,9 @@ function ProductsAdmin() {
               key={p.cle}
               className="group rounded-2xl overflow-hidden border shadow-sm bg-white flex flex-col"
             >
-              <div className={`bg-gradient-to-br ${p.accentFrom} ${p.accentTo} text-white p-6 relative`}>
+              <div
+                className={`bg-gradient-to-br ${p.accentFrom} ${p.accentTo} text-white p-6 relative`}
+              >
                 <Icon className="h-10 w-10 mb-3" />
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-bold">{p.nom || "Sans nom"}</h3>
@@ -132,7 +134,9 @@ function ProductsAdmin() {
                     <span
                       key={m.cle}
                       className={`text-xs rounded-full px-2 py-0.5 ${
-                        m.actif ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-400 line-through"
+                        m.actif
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-slate-100 text-slate-400 line-through"
                       }`}
                     >
                       {m.nom}
@@ -180,7 +184,10 @@ function ProductsAdmin() {
           onSave={() => {
             const cle =
               draft.cle.trim() ||
-              draft.nom.trim().toUpperCase().replace(/[^A-Z0-9]+/g, "_") ||
+              draft.nom
+                .trim()
+                .toUpperCase()
+                .replace(/[^A-Z0-9]+/g, "_") ||
               `PRODUIT_${Date.now()}`;
             upsertProduit({ ...draft, cle });
             setDraft(null);
@@ -308,7 +315,9 @@ function ProduitEditor({
                     );
                   })}
                 </div>
-                <div className={`h-12 rounded-lg bg-gradient-to-br ${draft.accentFrom} ${draft.accentTo} flex items-center gap-2 px-3 text-white`}>
+                <div
+                  className={`h-12 rounded-lg bg-gradient-to-br ${draft.accentFrom} ${draft.accentTo} flex items-center gap-2 px-3 text-white`}
+                >
                   <Icon size={18} />
                   <span className="text-sm font-semibold">{draft.nom || "Aperçu"}</span>
                 </div>
@@ -357,7 +366,10 @@ function ProduitEditor({
                   >
                     {m.actif ? "Actif" : "Inactif"}
                   </button>
-                  <button onClick={() => removeModule(i)} className="text-slate-400 hover:text-red-600">
+                  <button
+                    onClick={() => removeModule(i)}
+                    className="text-slate-400 hover:text-red-600"
+                  >
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -367,7 +379,10 @@ function ProduitEditor({
         </div>
 
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t bg-slate-50">
-          <button onClick={onCancel} className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900"
+          >
             Annuler
           </button>
           <button
@@ -409,7 +424,10 @@ function ConfirmModal({
         <h3 className="font-bold text-slate-900">{title}</h3>
         <p className="text-sm text-slate-600 mt-2">{message}</p>
         <div className="flex items-center justify-end gap-2 mt-6">
-          <button onClick={onCancel} className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900"
+          >
             Annuler
           </button>
           <button
