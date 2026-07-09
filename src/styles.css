@@ -1,5 +1,8 @@
 @import "tailwindcss" source(none);
 @source "../src";
+/* Espaces Verts (greensig-front) intégré nativement : Tailwind v4 doit scanner
+   ses fichiers pour générer ses classes (sinon l'app s'affiche sans styles). */
+@source "../apps/espaces-verts";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -141,4 +144,64 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Styles custom repris de greensig-front (fournis auparavant par son index.html
+   via le CDN Tailwind). Nécessaires au rendu de l'app Espaces Verts intégrée :
+   scrollbars fines, animation d'entrée, couleurs des <option>.
+   ─────────────────────────────────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix lisibilité des <option> dans les <select> (repris de greensig) */
+select option {
+  color: #1f2937 !important;
+  background-color: white !important;
+}
+select option:checked {
+  background-color: #d1fae5 !important;
+  color: #1f2937 !important;
+}
+
+/* Spinner de chargement greensig */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #4ade80;
+  animation: spin 1s ease-in-out infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation d'entrée utilisée par les composants greensig */
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in {
+  animation: slideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
