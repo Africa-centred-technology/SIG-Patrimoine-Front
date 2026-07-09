@@ -91,9 +91,7 @@ export function TileMap({
   const allGroups: MarkerGroup[] =
     groups ?? (markers ? [{ key: "all", label: "Objets", color: "#64748b", markers }] : []);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const visibleMarkers = allGroups
-    .filter((g) => !hidden.has(g.key))
-    .flatMap((g) => g.markers);
+  const visibleMarkers = allGroups.filter((g) => !hidden.has(g.key)).flatMap((g) => g.markers);
 
   // Mesure du conteneur
   useEffect(() => {
@@ -124,8 +122,16 @@ export function TileMap({
   const originY = wc.y - h / 2;
 
   // Glisser pour déplacer (pan)
-  const drag = useRef<{ x: number; y: number; center: { lat: number; lng: number }; moved: boolean } | null>(null);
+  const drag = useRef<{
+    x: number;
+    y: number;
+    center: { lat: number; lng: number };
+    moved: boolean;
+  } | null>(null);
   const onPointerDown = (e: React.PointerEvent) => {
+    // Ne pas démarrer le pan si on interagit avec un contrôle (bouton) : sinon la
+    // capture du pointeur « avale » le clic (sélecteur de fond, zoom, marqueurs...).
+    if ((e.target as HTMLElement).closest("button")) return;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     drag.current = { x: e.clientX, y: e.clientY, center, moved: false };
   };
@@ -155,7 +161,7 @@ export function TileMap({
         const wrappedX = ((tx % n) + n) % n;
         if (ty < 0 || ty >= n) continue;
         tiles.push({
-          key: `${tx}-${ty}`,
+          key: `${layer}-${z}-${tx}-${ty}`,
           url: LAYERS[layer].url(z, wrappedX, ty),
           left: tx * TILE - originX,
           top: ty * TILE - originY,
@@ -239,7 +245,10 @@ export function TileMap({
                 onClick={() => toggleGroup(g.key)}
                 className={`flex items-center gap-2 w-full text-left text-xs rounded-md px-2 py-1 transition ${on ? "hover:bg-slate-100" : "opacity-40 hover:opacity-70"}`}
               >
-                <span className="h-3 w-3 rounded-full ring-1 ring-white shrink-0" style={{ backgroundColor: g.color }} />
+                <span
+                  className="h-3 w-3 rounded-full ring-1 ring-white shrink-0"
+                  style={{ backgroundColor: g.color }}
+                />
                 <span className="text-slate-700">{g.label}</span>
                 <span className="ml-auto text-slate-400">{g.markers.length}</span>
               </button>
@@ -265,11 +274,19 @@ export function TileMap({
 
       {/* Zoom + recentrer */}
       <div className="absolute top-16 right-3 flex flex-col bg-white/90 backdrop-blur rounded-lg shadow-lg border border-slate-200 overflow-hidden">
-        <button onClick={() => setZ((v) => Math.min(MAX_Z, v + 1))} className="p-1.5 hover:bg-slate-100 text-slate-700" title="Zoomer">
+        <button
+          onClick={() => setZ((v) => Math.min(MAX_Z, v + 1))}
+          className="p-1.5 hover:bg-slate-100 text-slate-700"
+          title="Zoomer"
+        >
           <Plus size={16} />
         </button>
         <div className="h-px bg-slate-200" />
-        <button onClick={() => setZ((v) => Math.max(MIN_Z, v - 1))} className="p-1.5 hover:bg-slate-100 text-slate-700" title="Dézoomer">
+        <button
+          onClick={() => setZ((v) => Math.max(MIN_Z, v - 1))}
+          className="p-1.5 hover:bg-slate-100 text-slate-700"
+          title="Dézoomer"
+        >
           <Minus size={16} />
         </button>
         <div className="h-px bg-slate-200" />
@@ -288,13 +305,26 @@ export function TileMap({
       {/* Panneau de détails (objet sélectionné) */}
       {selected && (
         <div className="absolute bottom-3 right-3 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
-          <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ borderTopColor: selected.color }}>
-            <span className="h-3 w-3 rounded-full ring-1 ring-white" style={{ backgroundColor: selected.color }} />
+          <div
+            className="flex items-center gap-2 px-3 py-2 border-b"
+            style={{ borderTopColor: selected.color }}
+          >
+            <span
+              className="h-3 w-3 rounded-full ring-1 ring-white"
+              style={{ backgroundColor: selected.color }}
+            />
             <div className="min-w-0">
-              <div className="text-sm font-semibold text-slate-900 truncate">{selected.title ?? "Objet"}</div>
-              {selected.subtitle && <div className="text-[11px] text-slate-500 truncate">{selected.subtitle}</div>}
+              <div className="text-sm font-semibold text-slate-900 truncate">
+                {selected.title ?? "Objet"}
+              </div>
+              {selected.subtitle && (
+                <div className="text-[11px] text-slate-500 truncate">{selected.subtitle}</div>
+              )}
             </div>
-            <button onClick={() => setSelected(null)} className="ml-auto text-slate-400 hover:text-slate-700">
+            <button
+              onClick={() => setSelected(null)}
+              className="ml-auto text-slate-400 hover:text-slate-700"
+            >
               <X size={15} />
             </button>
           </div>
@@ -317,7 +347,10 @@ export function TileMap({
           <div className="font-semibold text-slate-700 mb-1">Légende</div>
           {legend.map((l, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full ring-1 ring-white" style={{ backgroundColor: l.color }} />
+              <span
+                className="h-3 w-3 rounded-full ring-1 ring-white"
+                style={{ backgroundColor: l.color }}
+              />
               <span className="text-slate-700">{l.label}</span>
             </div>
           ))}

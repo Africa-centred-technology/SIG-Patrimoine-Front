@@ -64,7 +64,9 @@ function MapEclairage() {
           { label: "Puissance", value: `${l.puissance_w} W` },
           { label: "État", value: ETAT_LABEL[l.etat] ?? l.etat },
           ...(l.hauteur_feu_m ? [{ label: "Hauteur", value: `${l.hauteur_feu_m} m` }] : []),
-          ...(l.temperature_couleur_k ? [{ label: "Température", value: `${l.temperature_couleur_k} K` }] : []),
+          ...(l.temperature_couleur_k
+            ? [{ label: "Température", value: `${l.temperature_couleur_k} K` }]
+            : []),
           ...(l.date_pose ? [{ label: "Pose", value: l.date_pose }] : []),
           { label: "Secteur", value: l.site_id },
         ],
